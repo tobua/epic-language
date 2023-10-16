@@ -3,6 +3,7 @@ import { log } from './helper'
 
 type Sheet = { [key: string]: string }
 type Sheets = { [key in Language]?: Sheet }
+type Replacement = string | number
 
 const sheets: Sheets = {}
 
@@ -40,25 +41,44 @@ async function loadSheet(apiRoute: string, onLoad: () => void, defaultLanguage: 
   })
 }
 
+function insertReplacements(translation: string, replacements?: Replacement | Replacement[]) {
+  if (!replacements) return translation
+
+  if (!Array.isArray(replacements)) {
+    // eslint-disable-next-line no-param-reassign
+    replacements = [replacements]
+  }
+
+  let result = translation
+  for (let index = 0; index < replacements.length; index += 1) {
+    result = result.replace('{}', String(replacements[index]))
+  }
+  return result
+}
+
 // defaultLanguage is the language in the standard translation that's always loaded.
 export function translations<T extends Sheet>(
   defaultTranslations: T,
   apiRoute: string,
-  onLoad: () => void,
+  onLoad: () => void = () => {},
   defaultLanguage: Language = Language.en,
 ) {
   sheets[defaultLanguage] = defaultTranslations
 
   loadSheet(apiRoute, onLoad, defaultLanguage)
 
-  function translate(key: keyof T, language: Language = defaultLanguage) {
+  function translate(
+    key: keyof T,
+    replacements?: Replacement | Replacement[],
+    language: Language = defaultLanguage,
+  ) {
     const sheet = sheets[language]
     if (!has(sheet, key)) {
       log(`Translation for key "${String(key)}" is missing`)
       if (Object.hasOwn(sheets[defaultLanguage], key)) return sheets[defaultLanguage][key as string]
       return key
     }
-    return sheet[key as string]
+    return insertReplacements(sheet[key as string], replacements)
   }
 
   return { translate }

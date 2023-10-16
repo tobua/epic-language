@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import React from 'react'
 import { test, expect, mock, spyOn } from 'bun:test'
 import { render } from '@testing-library/react'
@@ -9,6 +11,7 @@ GlobalRegistrator.register()
 console.log = log // Restore log to show up in tests during development.
 
 const windowLanguageSpy = spyOn(window, 'navigator')
+// @ts-ignore
 windowLanguageSpy.mockImplementation(() => ({ language: 'en_US' }))
 
 test('Can render a basic app.', async () => {
@@ -32,7 +35,7 @@ test('Can render a basic app.', async () => {
 })
 
 test('Translates key in initially provided language.', () => {
-  const onLoad = mock()
+  const onLoad = mock(() => {})
   const { translate } = translations(
     { title: 'My Title', description: 'This is the description.' },
     '/api/translations',
@@ -49,7 +52,7 @@ test('Translates key in initially provided language.', () => {
 
 test('Symbols or numbers cannot be used as keys.', () => {
   // TODO doesn't seem possible to restrict keys to string when using generic type with extends.
-  const onLoad = mock()
+  const onLoad = mock(() => {})
   const symbol = Symbol('test')
   const { translate } = translations(
     { [symbol]: 'My Symbol', 5: 'My Number' },
@@ -63,4 +66,11 @@ test('Symbols or numbers cannot be used as keys.', () => {
   // @ts-expect-error
   expect(translate('missing')).toBe('missing')
   expect(onLoad).toHaveBeenCalled()
+})
+
+test('Replacements are inserted.', () => {
+  const { translate } = translations({ counter: 'Count: {}' }, '/api/translations')
+
+  expect(translate('counter', '123')).toBe('Count: 123')
+  expect(translate('counter', 456)).toBe('Count: 456')
 })
