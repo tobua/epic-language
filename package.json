@@ -1,0 +1,86 @@
+{
+  "name": "epic-language",
+  "description": "Translations for React and React Native.",
+  "version": "0.0.0-development",
+  "repository": "github:tobua/epic-language",
+  "license": "MIT",
+  "author": "Matthias Giger",
+  "scripts": {
+    "build": "padua build",
+    "start": "padua watch",
+    "test": "bun test"
+  },
+  "padua": {
+    "entry": [
+      "index.ts",
+      "native.ts"
+    ],
+    "tsconfig": {
+      "compilerOptions": {
+        "types": [
+          "bun-types"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "logua": "^3.0.2"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^12.9.1",
+    "@testing-library/react": "^14.0.0",
+    "@types/react": "^18.2.28",
+    "@types/react-dom": "^18.2.13",
+    "bun-types": "^1.0.6",
+    "happy-dom": "^12.9.1",
+    "padua": "^2.0.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "peerDependencies": {
+    "react": ">= 18",
+    "react-native": ">= 72"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
+  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "default": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./native": {
+      "default": {
+        "types": "./dist/native.d.ts",
+        "default": "./dist/native.js"
+      }
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "translations",
+    "i18n",
+    "translate"
+  ],
+  "prettier": "padua/configuration/.prettierrc.json",
+  "eslintConfig": {
+    "extends": "./node_modules/padua/configuration/eslint.cjs"
+  },
+  "publishConfig": {
+    "provenance": false
+  },
+  "engines": {
+    "node": ">= 18"
+  }
+}
