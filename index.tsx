@@ -9,24 +9,22 @@ const has = (object: object, key: string | number | symbol) => Object.hasOwn(obj
 
 function getLanguage(defaultLanguage: Language) {
   // @ts-ignore dom lib is added...
-  const language = window.navigator.language.substring(0, 2)
-  if (Object.values(Language).includes(language as Language)) {
-    return language
-  }
+  const language = (global.mockLanguage ?? window.navigator.language).substring(0, 2)
+  if (Object.values(Language).includes(language as Language)) return language
   return defaultLanguage
 }
 
 async function loadSheet(
+  language: Language,
   sheets: Sheets,
   apiRoute: string,
   onLoad: () => void,
   defaultLanguage: Language,
 ) {
-  const language = getLanguage(defaultLanguage)
   if (language === defaultLanguage) return onLoad()
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<void>(async (done) => {
-    const response = await fetch(`${apiRoute}/language`)
+    const response = await fetch(`${apiRoute}/${language}`)
     const data = await response.json()
 
     sheets[language] = data
@@ -43,14 +41,15 @@ export function translations<T extends Sheet>(
   defaultLanguage: Language = Language.en,
 ) {
   const sheets: Sheets = {}
+  const userLanguage = getLanguage(defaultLanguage)
   sheets[defaultLanguage] = defaultTranslations
 
-  loadSheet(sheets, apiRoute, onLoad, defaultLanguage)
+  loadSheet(userLanguage, sheets, apiRoute, onLoad, defaultLanguage)
 
   function translate(
     key: keyof T,
     replacements?: Replacement | Replacement[],
-    language: Language = defaultLanguage,
+    language: Language = userLanguage,
   ) {
     const sheet = sheets[language]
     if (!sheet || !has(sheet, key)) {

@@ -1,18 +1,11 @@
 /// <reference lib="dom" />
 
-import { test, expect, mock, spyOn, beforeAll, afterAll } from 'bun:test'
+import './setup-dom'
+import { test, expect, mock, beforeAll } from 'bun:test'
 import { Language, translations } from '../index'
 
-let windowLanguageSpy
-
 beforeAll(() => {
-  windowLanguageSpy = spyOn(window, 'navigator')
-  // @ts-ignore
-  windowLanguageSpy.mockImplementation(() => ({ language: 'en_US' }))
-})
-
-afterAll(() => {
-  windowLanguageSpy.mockRestore()
+  global.mockLanguage = 'en_US'
 })
 
 test('Translates key in initially provided language.', () => {
