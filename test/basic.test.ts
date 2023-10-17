@@ -1,37 +1,18 @@
 /// <reference lib="dom" />
 
-import React from 'react'
-import { test, expect, mock, spyOn } from 'bun:test'
-import { render } from '@testing-library/react'
-import { GlobalRegistrator } from '@happy-dom/global-registrator'
+import { test, expect, mock, spyOn, beforeAll, afterAll } from 'bun:test'
 import { Language, translations } from '../index'
 
-const { log } = console // GlobalRegistrator breaks console.log
-GlobalRegistrator.register()
-console.log = log // Restore log to show up in tests during development.
+let windowLanguageSpy
 
-const windowLanguageSpy = spyOn(window, 'navigator')
-// @ts-ignore
-windowLanguageSpy.mockImplementation(() => ({ language: 'en_US' }))
+beforeAll(() => {
+  windowLanguageSpy = spyOn(window, 'navigator')
+  // @ts-ignore
+  windowLanguageSpy.mockImplementation(() => ({ language: 'en_US' }))
+})
 
-test('Can render a basic app.', async () => {
-  function Text({ children, ...props }: { children: string }) {
-    return <p {...props}>{children.toUpperCase()}</p>
-  }
-  const app = render(
-    <div>
-      <Text>first</Text>
-      <Text aria-label="translation">second</Text>
-    </div>,
-  )
-
-  expect(app).toBeDefined()
-  expect(app.findByText('FIRST')).toBeDefined()
-  expect(app.findByText('SECOND')).toBeDefined()
-
-  const secondByLabel = await app.findByLabelText('translation')
-
-  expect(secondByLabel).toBeDefined()
+afterAll(() => {
+  windowLanguageSpy.mockRestore()
 })
 
 test('Translates key in initially provided language.', () => {
