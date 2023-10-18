@@ -8,6 +8,8 @@ React translation library built with the Bun 🐰 runtime and Cursor AI 🖱️ 
 - Supports React Native
 - `<Text id="myTranslationKey" />` component to render translations
 - Replacements with `{}` in translations
+- Translations generated on demand using LLMs (AI)
+- Optimized for development phase: no need to commit any translations to source!
 
 ## Usage
 

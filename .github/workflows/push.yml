@@ -16,8 +16,13 @@ jobs:
       - run: bun install
       - name: 🚧 Build
         run: bun run build
-      - name: 🧪 Test
-        run: bun test
+      - name: 🧪 Test Browser
+        run: bun test -- basic react
+      # Tests running in parallel and browser environment cannot be torn down properly after tests.
+      - name: 🧪 Test Server
+        run: bun test -- interface ai
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - run: npm install -g npm@latest
       - name: 📢 Release
         uses: tobua/release-npm-action@v2

@@ -3,3 +3,4 @@ package-lock.json
 tsconfig.json
 dist
 bun.lockb
+.env

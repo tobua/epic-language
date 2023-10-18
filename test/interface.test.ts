@@ -1,5 +1,3 @@
-/// <reference lib="dom" />
-
 import { test, expect, mock, beforeAll, afterAll } from 'bun:test'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'

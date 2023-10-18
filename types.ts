@@ -9,7 +9,7 @@ export type Replacement = string | number
 export enum Language {
   en = 'en',
   es = 'es',
-  cn = 'cn',
+  zh = 'zh',
   de = 'de',
   fr = 'fr',
   it = 'it',
