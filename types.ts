@@ -3,7 +3,7 @@ import type { DetailedHTMLProps, HTMLAttributes } from 'react'
 export type Sheet<T extends string | number | symbol = string> = {
   [key in T]: string
 }
-export type Sheets = { [key in Language]?: Sheet }
+export type Sheets<T extends Sheet> = { [key in Language]?: Sheet<keyof T> }
 export type Replacement = string | number
 
 export enum Language {

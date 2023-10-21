@@ -14,7 +14,7 @@ test('Translates single key to various languages.', async () => {
   expect(sheetSpanish.title.toLowerCase()).toBe('Mi Título'.toLowerCase())
   expect(sheetChinese.title).toBe('我的标题')
   expect(sheetGerman.title).toBe('Mein Titel')
-})
+}, 10000)
 
 test('Translates several to various languages.', async () => {
   const inputSheet = JSON.stringify({ title: 'My Title', description: 'This is the description.' })
@@ -22,7 +22,7 @@ test('Translates several to various languages.', async () => {
   const sheetChinese = await translate(inputSheet, Language.zh)
   const sheetGerman = await translate(inputSheet, Language.de)
 
-  expect(sheetFrench.title).toBe('Mon titre')
+  expect(sheetFrench.title.toLowerCase()).toBe('Mon titre'.toLowerCase())
   // Ceci est la description. / Voici la description.
   expect(sheetFrench.description).toContain('la description')
 

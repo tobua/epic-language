@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect, createElement } from 'react'
+import { type Text as NativeText } from 'react-native'
 import { log } from './helper'
 import { Sheets, Sheet, Language, Replacement, TextProps } from './types'
 import { insertReplacements, replaceBracketsWithChildren } from './replace'
@@ -14,14 +15,14 @@ function getLanguage(defaultLanguage: Language) {
   return defaultLanguage
 }
 
-async function loadSheet(
+async function loadSheet<T extends Sheet>(
   language: Language,
-  sheets: Sheets,
+  sheets: Sheets<T>,
   apiRoute: string,
   onLoad: () => void,
   defaultLanguage: Language,
 ) {
-  if (language === defaultLanguage) return onLoad()
+  if (language === defaultLanguage || sheets[language]) return onLoad()
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<void>(async (done) => {
     const response = await fetch(`${apiRoute}/${language}`)
@@ -34,29 +35,39 @@ async function loadSheet(
 }
 
 // defaultLanguage is the language in the standard translation that's always loaded.
-export function translations<T extends Sheet>(
-  defaultTranslations: T,
-  apiRoute: string,
-  onLoad: () => void = () => {},
-  defaultLanguage: Language = Language.en,
-) {
-  const sheets: Sheets = {}
+export function create<T extends Sheet>({
+  translations,
+  route,
+  onLoad = () => {},
+  defaultLanguage = Language.en,
+  sheets = {},
+  languages = Object.keys(Language),
+  Type = 'span',
+}: {
+  translations: T
+  route?: string
+  onLoad?: () => void
+  defaultLanguage?: Language
+  sheets?: Sheets<T>
+  languages?: string[]
+  Type?: 'span' | 'p' | 'div' | 'a' | 'button' | typeof NativeText
+}) {
   const userLanguage = getLanguage(defaultLanguage)
-  sheets[defaultLanguage] = defaultTranslations
+  sheets[defaultLanguage] = translations
 
-  loadSheet(userLanguage, sheets, apiRoute, onLoad, defaultLanguage)
+  loadSheet(userLanguage, sheets, route, onLoad, defaultLanguage)
 
   function translate(
     key: keyof T,
     replacements?: Replacement | Replacement[],
     language: Language = userLanguage,
   ) {
-    const sheet = sheets[language]
+    const sheet = sheets[languages.includes(language) ? language : defaultLanguage]
     if (!sheet || !has(sheet, key)) {
       if (process.env.NODE_ENV !== 'production') {
         log(`Translation for key "${String(key)}" for language ${language} is missing`, 'warning')
       }
-      return (sheets[defaultLanguage] as Sheet)[key as string] ?? key
+      return (sheet ?? {})[key as string] ?? key
     }
     return insertReplacements(sheet[key as string], replacements)
   }
@@ -69,7 +80,7 @@ export function translations<T extends Sheet>(
     children,
     ...props
   }: {
-    as?: 'div' | 'span' | 'p'
+    as?: typeof Type
     id?: keyof T
     replacements?: Replacement | Replacement[]
     language?: Language
@@ -91,12 +102,9 @@ export function translations<T extends Sheet>(
       // console.log('effect', ref.current)
     }, [])
 
-    return (
-      <Component ref={ref} {...props}>
-        {filledContent}
-      </Component>
-    )
+    // @ts-ignore Issues with ref.
+    return createElement(Component, { ...props, ref }, filledContent)
   }
 
-  return { translate, Text }
+  return { translate, Text, language: userLanguage }
 }

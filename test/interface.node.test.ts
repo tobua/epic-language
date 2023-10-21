@@ -1,26 +1,30 @@
-import { test, expect, mock, beforeAll, afterAll } from 'bun:test'
+import { test, expect, mock, beforeAll, beforeEach, afterAll } from 'bun:test'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
-import { Language, translations } from '../index'
+import { Language, create } from '../index'
+import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
 
 const server = setupServer(
   rest.get('http://localhost:3000/api/translations/en', (req, res, ctx) =>
-    res(ctx.json({ title: 'My Title', description: 'This is the description.' })),
+    res(ctx.json(englishSheet)),
   ),
   rest.get('http://localhost:3000/api/translations/es', (req, res, ctx) =>
-    res(ctx.json({ title: 'Mi Título', description: 'Esta es la descripción.' })),
+    res(ctx.json(spanishSheet)),
   ),
   rest.get('http://localhost:3000/api/translations/zh', (req, res, ctx) =>
-    res(ctx.json({ title: '我的标题', description: '这是描述。' })),
+    res(ctx.json(chineseSheet)),
   ),
   rest.get('http://localhost:3000/api/translations/de', (req, res, ctx) =>
-    res(ctx.json({ title: 'Mein Titel', description: 'Das ist meine Beschreibung.' })),
+    res(ctx.json(germanSheet)),
   ),
 )
 
 beforeAll(() => {
-  global.mockLanguage = 'en_US'
   server.listen()
+})
+
+beforeEach(() => {
+  global.mockLanguage = 'en_US'
 })
 
 afterAll(() => {
@@ -36,14 +40,16 @@ test('Translations are loaded from serverless function.', async () => {
 
   global.mockLanguage = 'de_CH'
   const onLoad = mock(() => {})
-  const { translate } = translations(
-    { title: 'My Title', description: 'This is the description.' },
-    'http://localhost:3000/api/translations',
+  const { translate, language } = create({
+    translations: englishSheet,
+    route: 'http://localhost:3000/api/translations',
     onLoad,
-    Language.en,
-  )
+    defaultLanguage: Language.en,
+  })
 
-  expect(translate('title')).toBe('My Title')
+  expect(language).toBe(Language.de)
+  expect(translate('title', undefined, Language.en)).toBe(englishSheet.title)
+  expect(translate('title')).toBe('title')
   expect(onLoad).not.toHaveBeenCalled()
 
   await new Promise((done) => {
@@ -51,5 +57,5 @@ test('Translations are loaded from serverless function.', async () => {
   })
 
   expect(onLoad).toHaveBeenCalled()
-  expect(translate('title')).toBe('Mein Titel')
+  expect(translate('title')).toBe(germanSheet.title)
 })
