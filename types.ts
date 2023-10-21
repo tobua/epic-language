@@ -15,6 +15,8 @@ export enum Language {
   it = 'it',
 }
 
+export type Languages = keyof typeof Language
+
 export type TextProps = DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> &
   DetailedHTMLProps<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement> &
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>

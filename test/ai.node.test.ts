@@ -31,8 +31,7 @@ test('Translates several to various languages.', async () => {
     description: '这是描述。',
   })
 
-  expect(sheetGerman).toEqual({
-    title: 'Mein Titel',
-    description: 'Dies ist die Beschreibung.',
-  })
+  expect(sheetGerman.title).toBe('Mein Titel')
+  // Das / Dies.
+  expect(sheetGerman.description).toContain('ist die Beschreibung.')
 }, 20000)

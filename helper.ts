@@ -1,16 +1,16 @@
 import { create } from 'logua'
-import { Language } from './types'
+import { Language, Languages } from './types'
 
 export const log = create('epic-language', 'magenta')
 
 // TODO for validation and country specific locales.
 // Intl.getCanonicalLocales("EN-US"); // ["en-US"]
 
-export const readableLanguage = {
+export const readableLanguage: Record<Languages, string> = {
   [Language.en]: 'English',
-  [Language.es]: 'Spanish',
-  [Language.zh]: 'Chinese',
-  [Language.de]: 'German',
-  [Language.fr]: 'French',
-  [Language.it]: 'Italian',
+  [Language.es]: 'Idioma',
+  [Language.zh]: '语言',
+  [Language.de]: 'Deutsch',
+  [Language.fr]: 'Français',
+  [Language.it]: 'Italiano',
 }

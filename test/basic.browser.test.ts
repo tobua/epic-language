@@ -98,3 +98,17 @@ test('Available languages can be restricted.', () => {
   // Language is listed.
   expect(translate('title', undefined, Language.zh)).toBe(chineseSheet.title)
 })
+
+test('Language can be changed after initialization.', () => {
+  const { translate, setLanguage } = create({
+    translations: englishSheet,
+    sheets: {
+      [Language.en]: englishSheet,
+      [Language.zh]: chineseSheet,
+    },
+  })
+
+  expect(translate('description')).toBe(englishSheet.description)
+  setLanguage(Language.zh)
+  expect(translate('title')).toBe(chineseSheet.title)
+})

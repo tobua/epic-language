@@ -17,6 +17,11 @@
       "index.ts",
       "native.ts"
     ],
+    "esbuild": {
+      "external": [
+        "epic-language"
+      ]
+    },
     "tsconfig": {
       "compilerOptions": {
         "types": [
@@ -25,6 +30,9 @@
         "paths": {
           "react-native": [
             "./test/react-native.mock"
+          ],
+          "epic-language": [
+            "./index"
           ]
         }
       }

@@ -1,17 +1,18 @@
 import { useRef, useEffect, createElement } from 'react'
 import { type Text as NativeText } from 'react-native'
-import { log } from './helper'
+import { log, readableLanguage } from './helper'
 import { Sheets, Sheet, Language, Replacement, TextProps } from './types'
 import { insertReplacements, replaceBracketsWithChildren } from './replace'
 
-export { Language }
+export { Language, readableLanguage }
 
 const has = (object: object, key: string | number | symbol) => Object.hasOwn(object, key)
 
-function getLanguage(defaultLanguage: Language) {
+function getBrowserLanguage(defaultLanguage: Language) {
   // @ts-ignore dom lib is added...
-  const language = (global.mockLanguage ?? window.navigator.language).substring(0, 2)
-  if (Object.values(Language).includes(language as Language)) return language
+  const locale = global.mockLanguage ?? window.navigator?.language ?? defaultLanguage
+  const language = locale.substring(0, 2) as Language
+  if (Object.values(Language).includes(language)) return language
   return defaultLanguage
 }
 
@@ -43,6 +44,7 @@ export function create<T extends Sheet>({
   sheets = {},
   languages = Object.keys(Language),
   Type = 'span',
+  getLanguage = getBrowserLanguage,
 }: {
   translations: T
   route?: string
@@ -51,8 +53,9 @@ export function create<T extends Sheet>({
   sheets?: Sheets<T>
   languages?: string[]
   Type?: 'span' | 'p' | 'div' | 'a' | 'button' | typeof NativeText
+  getLanguage?: (language: Language) => Language
 }) {
-  const userLanguage = getLanguage(defaultLanguage)
+  let userLanguage = getLanguage(defaultLanguage)
   sheets[defaultLanguage] = translations
 
   loadSheet(userLanguage, sheets, route, onLoad, defaultLanguage)
@@ -98,7 +101,7 @@ export function create<T extends Sheet>({
     )
 
     useEffect(() => {
-      // Native replacement onLoad.
+      // TODO Native replacement onLoad.
       // console.log('effect', ref.current)
     }, [])
 
@@ -106,5 +109,10 @@ export function create<T extends Sheet>({
     return createElement(Component, { ...props, ref }, filledContent)
   }
 
-  return { translate, Text, language: userLanguage }
+  function setLanguage(language: Language) {
+    userLanguage = language
+    loadSheet(language, sheets, route, onLoad, defaultLanguage)
+  }
+
+  return { translate, Text, language: userLanguage, setLanguage }
 }
