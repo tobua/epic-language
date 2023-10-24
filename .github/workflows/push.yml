@@ -23,8 +23,7 @@ jobs:
       # Tests running in parallel and browser environment cannot be torn down properly after tests.
       - name: 🧪 Test Browser
         run: bun run test:browser
-      - run: npm install -g npm@latest
       - name: 📢 Release
-        uses: tobua/release-npm-action@v2
+        uses: tobua/release-npm-action@v3
         with:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
