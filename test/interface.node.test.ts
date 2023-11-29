@@ -1,22 +1,14 @@
-import { test, expect, mock, beforeAll, beforeEach, afterAll } from 'bun:test'
-import { rest } from 'msw'
+import { test, expect, mock, beforeAll, beforeEach, afterAll, afterEach } from 'bun:test'
+import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { Language, create } from '../index'
 import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
 
 const server = setupServer(
-  rest.get('http://localhost:3000/api/translations/en', (req, res, ctx) =>
-    res(ctx.json(englishSheet)),
-  ),
-  rest.get('http://localhost:3000/api/translations/es', (req, res, ctx) =>
-    res(ctx.json(spanishSheet)),
-  ),
-  rest.get('http://localhost:3000/api/translations/zh', (req, res, ctx) =>
-    res(ctx.json(chineseSheet)),
-  ),
-  rest.get('http://localhost:3000/api/translations/de', (req, res, ctx) =>
-    res(ctx.json(germanSheet)),
-  ),
+  http.get('http://localhost:3000/api/translations/en', () => HttpResponse.json(englishSheet)),
+  http.get('http://localhost:3000/api/translations/es', () => HttpResponse.json(spanishSheet)),
+  http.get('http://localhost:3000/api/translations/zh', () => HttpResponse.json(chineseSheet)),
+  http.get('http://localhost:3000/api/translations/de', () => HttpResponse.json(germanSheet)),
 )
 
 beforeAll(() => {
@@ -27,8 +19,19 @@ beforeEach(() => {
   global.mockLanguage = 'en_US'
 })
 
+afterEach(() => {
+  server.resetHandlers()
+})
+
 afterAll(() => {
   server.close()
+})
+
+test('Can fetch from mocked route.', async () => {
+  const response = await fetch('http://localhost:3000/api/translations/en')
+  const data = await response.json()
+
+  expect(data.title).toBe('My title')
 })
 
 test('Translations are loaded from serverless function.', async () => {
