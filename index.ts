@@ -69,6 +69,7 @@ export function create<T extends Sheet>({
     if (!sheet || !has(sheet, key)) {
       if (process.env.NODE_ENV !== 'production') {
         log(`Translation for key "${String(key)}" for language ${language} is missing`, 'warning')
+        loadSheet(language, sheets, route, () => {}, defaultLanguage)
       }
       return (sheet ?? {})[key as string] ?? key
     }

@@ -1,46 +1,38 @@
-import { test, expect, mock, beforeAll, beforeEach, afterAll, afterEach } from 'bun:test'
-import { http, HttpResponse } from 'msw'
-import { setupServer } from 'msw/node'
+import { test, expect, mock, beforeEach } from 'bun:test'
 import { Language, create } from '../index'
 import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
 
-const server = setupServer(
-  http.get('http://localhost:3000/api/translations/en', () => HttpResponse.json(englishSheet)),
-  http.get('http://localhost:3000/api/translations/es', () => HttpResponse.json(spanishSheet)),
-  http.get('http://localhost:3000/api/translations/zh', () => HttpResponse.json(chineseSheet)),
-  http.get('http://localhost:3000/api/translations/de', () => HttpResponse.json(germanSheet)),
-)
+const apiResponses = {
+  'http://localhost:3000/api/translations/en': englishSheet,
+  'http://localhost:3000/api/translations/es': spanishSheet,
+  'http://localhost:3000/api/translations/zh': chineseSheet,
+  'http://localhost:3000/api/translations/de': germanSheet,
+}
 
-beforeAll(() => {
-  server.listen()
+const delay = (time: number) =>
+  new Promise((done) => {
+    setTimeout(done, time * 1000)
+  })
+
+// @ts-ignore
+global.fetch = mock(async (url) => {
+  const response = apiResponses[url]
+  await delay(0.1)
+  return { json: async () => response }
 })
 
 beforeEach(() => {
   global.mockLanguage = 'en_US'
 })
 
-afterEach(() => {
-  server.resetHandlers()
-})
-
-afterAll(() => {
-  server.close()
-})
-
 test('Can fetch from mocked route.', async () => {
   const response = await fetch('http://localhost:3000/api/translations/en')
   const data = await response.json()
 
-  expect(data.title).toBe('My title')
+  expect(data.title).toBe('My Title')
 })
 
 test('Translations are loaded from serverless function.', async () => {
-  //   server.use(
-  //     rest.get('http://localhost:3000/api/translations/de', (req, res, ctx) =>
-  //       res(ctx.json({ title: 'Mein Titel', description: 'Das ist meine Beschreibung.' })),
-  //     ),
-  //   )
-
   global.mockLanguage = 'de_CH'
   const onLoad = mock(() => {})
   const { translate, language } = create({
@@ -55,10 +47,32 @@ test('Translations are loaded from serverless function.', async () => {
   expect(translate('title')).toBe('title')
   expect(onLoad).not.toHaveBeenCalled()
 
-  await new Promise((done) => {
-    setTimeout(done, 1000)
-  })
+  await delay(0.1)
 
   expect(onLoad).toHaveBeenCalled()
   expect(translate('title')).toBe(germanSheet.title)
+})
+
+test('Different translations can are loaded.', async () => {
+  global.mockLanguage = 'zh_CN'
+  const onLoad = mock(() => {})
+  const { translate, language } = create({
+    translations: englishSheet,
+    route: 'http://localhost:3000/api/translations',
+    onLoad,
+    defaultLanguage: Language.en,
+  })
+
+  expect(language).toBe(Language.zh)
+  expect(translate('title')).toBe('title')
+
+  await delay(0.1)
+
+  expect(translate('title')).toBe(chineseSheet.title)
+
+  expect(translate('title', undefined, Language.es)).toBe('title')
+
+  await delay(0.1)
+
+  expect(translate('title', undefined, Language.es)).toBe(spanishSheet.title)
 })
