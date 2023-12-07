@@ -50,9 +50,9 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "^12.10.3",
     "@testing-library/react": "^14.1.2",
-    "@types/react": "^18.2.39",
+    "@types/react": "^18.2.42",
     "@types/react-dom": "^18.2.17",
-    "bun-types": "^1.0.14",
+    "bun-types": "^1.0.15",
     "happy-dom": "^12.10.3",
     "openai": "^4.20.1",
     "padua": "^2.0.7",
@@ -62,7 +62,7 @@
   "peerDependencies": {
     "openai": ">= 4",
     "react": ">= 18",
-    "react-native": ">= 72"
+    "react-native": ">= 0.72"
   },
   "peerDependenciesMeta": {
     "react-native": {

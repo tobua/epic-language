@@ -72,9 +72,7 @@ For compatibility reasons the following `package.json` entries are required. The
     }
   },
   "overrides": {
-    "overrides": {
-      "chalk": "^4.1.2"
-    }
+    "chalk": "^4.1.2"
   }
 }
 ```
