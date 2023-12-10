@@ -62,17 +62,16 @@ const settingsText = translate('title')
 const Heading = <Text style={{ fontSize: 32 }}>title</Text>
 ```
 
-For compatibility reasons the following `package.json` entries are required. The first entry adds package exports support to metro while the second downgrades [`chalk`](https://npmjs.com/chalk) to a version that does not yet require package imports.
+ES Module exports are still an experimental feature in React Native's Metro bundler. Since this plugin requires them you have to turn them in your `metro.config.js` with:
 
-```json
-{
-  "metro": {
-    "resolver": {
-      "unstable_enablePackageExports": true
-    }
+```js
+const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config')
+
+const config = {
+  resolver: {
+    unstable_enablePackageExports: true,
   },
-  "overrides": {
-    "chalk": "^4.1.2"
-  }
 }
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config)
 ```
