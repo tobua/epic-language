@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "build": "papua build",
+    "deploy": "vercel deploy",
+    "start": "papua start",
+    "start:vercel": "vercel dev"
+  },
+  "dependencies": {
+    "exmpl": "^3.0.0",
+    "papua": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "localDependencies": {
+    "epic-language": ".."
+  },
+  "devDependencies": {
+    "vercel": "^32.7.0"
+  }
+}
