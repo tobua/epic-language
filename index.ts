@@ -10,7 +10,7 @@ const has = (object: object, key: string | number | symbol) => Object.hasOwn(obj
 
 function getBrowserLanguage(defaultLanguage: Language) {
   // @ts-ignore dom lib is added...
-  const locale = global.mockLanguage ?? window.navigator?.language ?? defaultLanguage
+  const locale = globalThis.mockLanguage ?? window.navigator?.language ?? defaultLanguage
   const language = locale.substring(0, 2) as Language
   if (Object.values(Language).includes(language)) return language
   return defaultLanguage
@@ -55,6 +55,17 @@ export function create<T extends Sheet>({
   Type?: 'span' | 'p' | 'div' | 'a' | 'button' | typeof NativeText
   getLanguage?: (language: Language) => Language
 }) {
+  if (!(defaultLanguage in Language)) {
+    log(
+      `Trying to initialize with missing language "${defaultLanguage}", falling back to "${
+        readableLanguage[Language.en]
+      }`,
+      'warning',
+    )
+    // eslint-disable-next-line no-param-reassign
+    defaultLanguage = Language.en
+  }
+
   let userLanguage = getLanguage(defaultLanguage)
   sheets[defaultLanguage] = translations
 
@@ -65,6 +76,15 @@ export function create<T extends Sheet>({
     replacements?: Replacement | Replacement[],
     language: Language = userLanguage,
   ) {
+    if (!(language in Language)) {
+      log(
+        `Trying to translate missing language "${language}", falling back to "${readableLanguage[defaultLanguage]}`,
+        'warning',
+      )
+      // eslint-disable-next-line no-param-reassign
+      language = defaultLanguage
+    }
+
     const sheet = sheets[languages.includes(language) ? language : defaultLanguage]
     if (!sheet || !has(sheet, key)) {
       if (process.env.NODE_ENV !== 'production') {

@@ -8,7 +8,7 @@ import { Language, create } from '../native'
 import { englishSheet, spanishSheet, chineseSheet } from './data'
 
 beforeEach(() => {
-  global.mockLanguage = 'en_US'
+  globalThis.mockLanguage = 'en_US'
 })
 
 test('Translates key in initially provided language.', () => {

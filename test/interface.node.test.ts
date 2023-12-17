@@ -1,4 +1,4 @@
-import { test, expect, mock, beforeEach } from 'bun:test'
+import { test, expect, mock, beforeEach, type Mock } from 'bun:test'
 import { Language, create } from '../index'
 import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
 
@@ -22,7 +22,7 @@ global.fetch = mock(async (url) => {
 })
 
 beforeEach(() => {
-  global.mockLanguage = 'en_US'
+  globalThis.mockLanguage = 'en_US'
 })
 
 test('Can fetch from mocked route.', async () => {
@@ -33,7 +33,7 @@ test('Can fetch from mocked route.', async () => {
 })
 
 test('Translations are loaded from serverless function.', async () => {
-  global.mockLanguage = 'de_CH'
+  globalThis.mockLanguage = 'de_CH'
   const onLoad = mock(() => {})
   const { translate, language } = create({
     translations: englishSheet,
@@ -54,7 +54,7 @@ test('Translations are loaded from serverless function.', async () => {
 })
 
 test('Different translations can are loaded.', async () => {
-  global.mockLanguage = 'zh_CN'
+  globalThis.mockLanguage = 'zh_CN'
   const onLoad = mock(() => {})
   const { translate, language } = create({
     translations: englishSheet,
@@ -75,4 +75,36 @@ test('Different translations can are loaded.', async () => {
   await delay(0.1)
 
   expect(translate('title', undefined, Language.es)).toBe(spanishSheet.title)
+})
+
+test('Will not load sheets for non-existing languages.', async () => {
+  const fetchMock = global.fetch as Mock<any>
+  fetchMock.mockReset()
+  globalThis.mockLanguage = 'ab_CD'
+  const onLoad = mock(() => {})
+  const { translate, language } = create({
+    translations: englishSheet,
+    route: 'http://localhost:3000/api/translations',
+    onLoad,
+    defaultLanguage: 'ab',
+  })
+
+  expect(fetchMock.mock.calls.length).toBe(0)
+
+  expect(language).toBe(Language.en)
+  expect(translate('title')).toBe(englishSheet.title)
+
+  await delay(0.1)
+
+  expect(translate('title')).toBe(englishSheet.title)
+
+  // @ts-expect-error
+  expect(translate('title', undefined, 'ef')).toBe(englishSheet.title)
+
+  await delay(0.1)
+
+  // @ts-expect-error
+  expect(translate('title', undefined, 'ef')).toBe(englishSheet.title)
+
+  expect(fetchMock.mock.calls.length).toBe(0)
 })

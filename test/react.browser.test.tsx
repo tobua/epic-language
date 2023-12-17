@@ -8,7 +8,7 @@ import { Language, create } from '../index'
 import { englishSheet } from './data'
 
 beforeEach(() => {
-  global.mockLanguage = 'en_US'
+  globalThis.mockLanguage = 'en_US'
 })
 
 test('Text component can be used to render translations.', () => {

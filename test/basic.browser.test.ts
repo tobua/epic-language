@@ -6,7 +6,7 @@ import { Language, create } from '../index'
 import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
 
 beforeEach(() => {
-  global.mockLanguage = 'en_US'
+  globalThis.mockLanguage = 'en_US'
 })
 
 test('Translates key in initially provided language.', () => {
@@ -54,7 +54,7 @@ test('Replacements are inserted.', () => {
 })
 
 test('Multiple sheets can be provided initially.', () => {
-  global.mockLanguage = 'es-ES'
+  globalThis.mockLanguage = 'es-ES'
 
   const onLoad = mock(() => {})
   const { translate } = create({
@@ -75,7 +75,7 @@ test('Multiple sheets can be provided initially.', () => {
 })
 
 test('Available languages can be restricted.', () => {
-  global.mockLanguage = 'de_CH'
+  globalThis.mockLanguage = 'de_CH'
 
   const onLoad = mock(() => {})
   const { translate } = create({
