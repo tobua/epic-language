@@ -86,6 +86,7 @@ test('Will not load sheets for non-existing languages.', async () => {
     translations: englishSheet,
     route: 'http://localhost:3000/api/translations',
     onLoad,
+    // @ts-expect-error
     defaultLanguage: 'ab',
   })
 

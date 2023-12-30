@@ -6,9 +6,16 @@ import { log } from './helper'
 import { Language } from './types'
 import { translate } from './translate'
 
-const { input, output, language = Language.en } = minimist(process.argv.slice(2))
+const {
+  input,
+  output,
+  language = Language.en,
+  languages = Object.keys(Language),
+} = minimist(process.argv.slice(2))
 let fullInputPath = isAbsolute(input) ? input : join(process.cwd(), input)
 let fullOutputPath = isAbsolute(output) ? output : join(process.cwd(), output)
+
+const parsedLanguages = Array.isArray(languages) ? languages : languages.split(',')
 
 if (!existsSync(fullInputPath)) {
   log(`Input file "${input}" does not exist`, 'error')
@@ -34,15 +41,15 @@ if (!lstatSync(fullOutputPath).isDirectory()) {
 if (!(language in Language)) {
   log(`Invalid language "${language}" passed`, 'error')
 }
-
-const languages = Object.keys(Language)
 // Remove input language.
-languages.splice(languages.indexOf(language), 1)
+if (parsedLanguages.includes(language)) {
+  parsedLanguages.splice(parsedLanguages.indexOf(language), 1)
+}
 
 const inputSheetContents = readFileSync(fullInputPath, 'utf8')
 const inputSheet = JSON.parse(inputSheetContents)
 
-const translatePromises = languages.map(async (currentLanguage: Language) => {
+const translatePromises = parsedLanguages.map(async (currentLanguage: Language) => {
   const sheet = await translate(JSON.stringify(inputSheet), currentLanguage)
   writeFileSync(join(fullOutputPath, `${currentLanguage}.json`), JSON.stringify(sheet, null, 2), {
     flag: 'w', // Override existing file.

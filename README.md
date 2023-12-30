@@ -5,14 +5,22 @@
 React translation library built with the Bun 🐰 runtime, Cursor AI 🖱️ editor and CodeWhisperer 🤫.
 
 - 3 ways to store translations
-  - Translated with AI and cached during runtime in a Serverless function
-  - Generated with AI during build time and stored in a Serverless function
-  - Generated manually or with AI during build and stored in the bundle
+  - **Bundled** Generated manually or with AI during build and stored in the bundle
+  - **CDN** Generated with AI during build time and stored in a Serverless function
+  - **Serverless** Translated with AI and cached during runtime in a Serverless function
 - Support for React Native
 - `<Text id="myTranslationKey" />` component to render translations
 - Replacements with `{}` in translations
 - Translations generated on demand using LLMs (AI)
 - Optimized for development phase: no need to commit any translations to source!
+
+## Usage with Buildtime Translation
+
+This is the most basic method where all translations are bundled into the main JavaScript bundle. This is useful for development, when supporting only few languages or when distributing as a package like React Native apps. To use this method, create a main JSON file in the default language containing the initial translations. The CLI translation script can then be used to translate these keys during installation or the build.
+
+```sh
+npx epic-language --input translations/en.json --output translations --language en --languages es,zh
+```
 
 ## Usage with Runtime Translation and Caching
 
@@ -34,12 +42,6 @@ const { translate } = create({
 
 translate('title') // My Title
 translate('counter', '5') // Counter: 5
-```
-
-## Usage with Buildtime Translation
-
-```ts
-// TODO
 ```
 
 ## Usage with React Native

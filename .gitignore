@@ -4,5 +4,5 @@ tsconfig.json
 dist
 bun.lockb
 .env
-files/*
-!files/en.json
+test/files/*
+!test/files/en.json

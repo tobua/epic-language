@@ -6,7 +6,6 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "bin": "bun dist/bin.js --input files/en.json --output files --language en",
     "build": "padua build",
     "start": "padua watch",
     "test": "bun test",
@@ -50,12 +49,12 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "^12.10.3",
     "@testing-library/react": "^14.1.2",
-    "@types/react": "^18.2.45",
+    "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.18",
-    "bun-types": "^1.0.18",
+    "bun-types": "^1.0.20",
     "happy-dom": "^12.10.3",
-    "openai": "^4.23.0",
-    "padua": "^2.0.7",
+    "openai": "^4.24.1",
+    "padua": "^2.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
