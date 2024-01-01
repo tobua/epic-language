@@ -22,6 +22,27 @@ This is the most basic method where all translations are bundled into the main J
 npx epic-language --input translations/en.json --output translations --language en --languages es,zh
 ```
 
+Once generated the translation files can be imported as JSON and bundled directly into JavaScript.
+
+```ts
+import { create, Language } from 'epic-language'
+import englishSheet from './translations/en.json'
+import spanishSheet from './translations/es.json'
+import chineseSheet from './translations/zh.json'
+
+const { translate } = create({
+  // Initial translations in default language.
+  translations: englishSheet,
+  // Additional translated language sheets.
+  sheets: {
+    [Language.es]: spanishSheet,
+    [Language.zh]: chineseSheet,
+  },
+})
+
+translate('title') // My Title
+```
+
 ## Usage with Runtime Translation and Caching
 
 ```ts
@@ -50,13 +71,14 @@ translate('counter', '5') // Counter: 5
 import { create, Language } from 'epic-language/native'
 
 const { translate, Text } = create(
+  // Default translations.
+  { title: 'My App' },
+  // Translations in additional languages.
   {
-    title: 'My App',
+    [Language.es]: { title: 'Mi aplicación' },
+    [Language.zh]: { title: '我的應用程式' },
   },
-  {
-    [Language.es]: { title: 'My App' },
-    [Language.zh]: { title: 'My App' },
-  },
+  // Language, defaults to english.
   Language.en,
 )
 

@@ -10,12 +10,18 @@ let onLoad = () => {
   loaded = true
 }
 
-const { translate } = create({
+const { translate, Text } = create({
   translations: englishSheet,
-  route: '/api/static/serverless',
+  route: 'http://localhost:3001/api/static/serverless', // '/api/static/serverless',
   onLoad,
   defaultLanguage: Language.en,
 })
+
+const InlineCode = ({ children }) => (
+  <pre style={{ display: 'inline', background: 'lightgray', padding: 3, borderRadius: 3 }}>
+    {children}
+  </pre>
+)
 
 function Translations() {
   console.log(loaded)
@@ -28,8 +34,15 @@ function Translations() {
   return (
     <div>
       {loading ? <p>Loading...</p> : <p>Ready!</p>}
-      <p>{translate('title')}</p>
-      <p>{translate('title', undefined, Language.zh)}</p>
+      <p>Default Language: {translate('title')}</p>
+      <p>Chinese Language: {translate('title', undefined, Language.zh)}</p>
+      <p>
+        <InlineCode>{`<Text>title</Text>`}</InlineCode>: <Text>title</Text>
+      </p>
+      <p>
+        <InlineCode>{`<Text language={Language.zh}>title</Text>`}</InlineCode>:{' '}
+        <Text language={Language.zh}>title</Text>
+      </p>
     </div>
   )
 }
