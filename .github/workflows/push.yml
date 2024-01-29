@@ -11,7 +11,7 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
       - run: bun install
       - name: 🚧 Build
@@ -23,6 +23,16 @@ jobs:
       # Tests running in parallel and browser environment cannot be torn down properly after tests.
       - name: 🧪 Test Browser
         run: bun run test:browser
+      - name: 🛠️ Build Demo
+        run: |
+          cd demo
+          bun install
+          bunx papua build
+      - name: 🚀 Publish Documentation
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: publish
+          folder: demo/dist
       - name: 📢 Release
         uses: tobua/release-npm-action@v3
         with:

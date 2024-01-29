@@ -58,7 +58,7 @@ export function create<T extends Sheet>({
   if (!(defaultLanguage in Language)) {
     log(
       `Trying to initialize with missing language "${defaultLanguage}", falling back to "${
-        readableLanguage[Language.en]
+        readableLanguage[Language.en].english
       }`,
       'warning',
     )
@@ -78,7 +78,7 @@ export function create<T extends Sheet>({
   ) {
     if (!(language in Language)) {
       log(
-        `Trying to translate missing language "${language}", falling back to "${readableLanguage[defaultLanguage]}`,
+        `Trying to translate missing language "${language}", falling back to "${readableLanguage[defaultLanguage].english}`,
         'warning',
       )
       // eslint-disable-next-line no-param-reassign

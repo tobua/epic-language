@@ -19,4 +19,6 @@ new Elysia()
   })
   .listen(3001)
 
-console.log('Local server running!')
+console.log(
+  'Local server running! Make sure to run "bun server:files" to ensure all languages are available.',
+)
