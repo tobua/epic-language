@@ -45,12 +45,35 @@ test('Symbols or numbers cannot be used as keys.', () => {
 
 test('Replacements are inserted.', () => {
   const { translate } = create({
-    translations: { counter: 'Count: {}' },
+    translations: { counter: 'Count: {}', multiple: 'First: {} Second: {}' },
     route: '/api/translations',
   })
 
   expect(translate('counter', '123')).toBe('Count: 123')
   expect(translate('counter', 456)).toBe('Count: 456')
+  expect(translate('counter', 'spaced@ _$')).toBe('Count: spaced@ _$')
+  expect(translate('multiple', ['123', '456'])).toBe('First: 123 Second: 456')
+})
+
+test('Replacements can be numbered.', () => {
+  const { translate } = create({
+    translations: {
+      one: 'a {1} b',
+      two: 'a {1} b {2} c',
+      reverse: 'a {2} b {1} c',
+      unordered: 'a {2} b {1} c {3} d',
+      multipleOrderedReplacements: "What's {2} current {1}?",
+    },
+    route: '/api/translations',
+  })
+
+  expect(translate('one', '1')).toBe('a 1 b')
+  expect(translate('two', [1, 2])).toBe('a 1 b 2 c')
+  expect(translate('reverse', [1, 2])).toBe('a 2 b 1 c')
+  expect(translate('unordered', [1, 2, 3])).toBe('a 2 b 1 c 3 d')
+  expect(translate('multipleOrderedReplacements', ['pastime', 'your'])).toBe(
+    "What's your current pastime?",
+  )
 })
 
 test('Multiple sheets can be provided initially.', () => {

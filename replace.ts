@@ -14,8 +14,13 @@ export function insertReplacements(
 
   let result = translation
   for (let index = 0; index < replacements.length; index += 1) {
-    result = result.replace('{}', String(replacements[index]))
+    if (result.includes(`{${index + 1}}`)) {
+      result = result.replace(`{${index + 1}}`, String(replacements[index]))
+    } else {
+      result = result.replace('{}', String(replacements[index]))
+    }
   }
+
   return result
 }
 

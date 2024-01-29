@@ -2,7 +2,7 @@
 
 <img align="right" src="https://github.com/tobua/epic-language/raw/main/logo.svg" width="30%" alt="Language Logo" />
 
-React translation library built with the Bun 🐰 runtime, Cursor AI 🖱️ editor and CodeWhisperer 🤫.
+AI-assisted translation library for React and React Native.
 
 - 3 ways to store translations
   - **Bundled** Generated manually or with AI during build and stored in the bundle
@@ -10,9 +10,11 @@ React translation library built with the Bun 🐰 runtime, Cursor AI 🖱️ edi
   - **Serverless** Translated with AI and cached during runtime in a Serverless function
 - Support for React Native
 - `<Text id="myTranslationKey" />` component to render translations
-- Replacements with `{}` in translations
+- Replacements with `{}` or `{1} {2}` in translations
 - Translations generated on demand using LLMs (AI)
 - Optimized for development phase: no need to commit any translations to source!
+
+This project was built to try the Bun 🐰 runtime, Cursor AI 🖱️ editor and CodeWhisperer 🤫.
 
 ## Usage with Buildtime Translation
 
@@ -26,13 +28,16 @@ Once generated the translation files can be imported as JSON and bundled directl
 
 ```ts
 import { create, Language } from 'epic-language'
-import englishSheet from './translations/en.json'
 import spanishSheet from './translations/es.json'
 import chineseSheet from './translations/zh.json'
 
 const { translate } = create({
   // Initial translations in default language.
-  translations: englishSheet,
+  translations: {
+    title: 'My Title',
+    replacement: 'Counter: {}',
+    multipleOrderedReplacements: "What's {2} current {1}?",
+  },
   // Additional translated language sheets.
   sheets: {
     [Language.es]: spanishSheet,
@@ -41,6 +46,8 @@ const { translate } = create({
 })
 
 translate('title') // My Title
+translate('replacement', 5) // Counter: 5
+transate('multipleOrderedReplacements', ['pastime', 'your']) // What's your current pastime?
 ```
 
 ## Usage with Runtime Translation and Caching
