@@ -11,6 +11,11 @@ beforeEach(() => {
   globalThis.mockLanguage = 'en_US'
 })
 
+const serializeDocument = (node: Element = document.body) => {
+  const serializer = new XMLSerializer()
+  return serializer.serializeToString(node)
+}
+
 test('Text component can be used to render translations.', () => {
   const onLoad = mock(() => {})
   const { Text } = create({
@@ -35,6 +40,38 @@ test('Text component can be used to render translations.', () => {
   expect(onLoad).toHaveBeenCalled()
   expect(title.textContent).toEqual(englishSheet.title)
   expect(description.textContent).toEqual(englishSheet.description)
+
+  app.unmount()
+})
+
+test('Text and JSX can be used as replacements.', () => {
+  const onLoad = mock(() => {})
+  const { Text } = create({
+    translations: {
+      regular: 'first {} second {} third',
+      ordered: 'one {2} two {1} three',
+    },
+    route: '/api/translations',
+    onLoad,
+    defaultLanguage: Language.en,
+  })
+
+  const app = render(
+    <div>
+      <Text id="regular" replacements={['123', '456']} />
+      <Text replacements={['123', '456']}>ordered</Text>
+      <Text id="regular" replacements={[<span>123</span>, <p>456</p>]} />
+      <Text replacements={[<p>123</p>, <span>456</span>]}>ordered</Text>
+    </div>,
+  )
+
+  const serialized = serializeDocument()
+
+  expect(onLoad).toHaveBeenCalled()
+  expect(serialized).toContain('first 123 second 456 third')
+  expect(serialized).toContain('one 456 two 123 three')
+  expect(serialized).toContain('first <span>123</span> second <p>456</p> third')
+  expect(serialized).toContain('one <span>456</span> two <p>123</p> three')
 
   app.unmount()
 })

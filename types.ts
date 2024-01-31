@@ -4,7 +4,7 @@ export type Sheet<T extends string | number | symbol = string> = {
   [key in T]: string
 }
 export type Sheets<T extends Sheet> = { [key in Language]?: Sheet<keyof T> }
-export type Replacement = string | number
+export type Replacement = string | number | JSX.Element
 
 // https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 export enum Language {

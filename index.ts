@@ -1,4 +1,4 @@
-import { useRef, useEffect, createElement } from 'react'
+import { useRef, useEffect, createElement, type ReactNode } from 'react'
 import { type Text as NativeText } from 'react-native'
 import { log, readableLanguage } from './helper'
 import { Sheets, Sheet, Language, Replacement, TextProps } from './types'
@@ -116,17 +116,21 @@ export function create<T extends Sheet>({
     const defaultSheet = (sheets[defaultLanguage] ?? {}) as Sheet<keyof T>
     const translation = sheet[key] ?? defaultSheet[key] ?? String(key)
     const Component = as
-    const filledContent = replaceBracketsWithChildren(
-      translation,
-      Array.isArray(children) ? children : [children],
-    )
+    const possibleReplacements = id && !replacements ? children : replacements
+    const arrayReplacements = Array.isArray(possibleReplacements)
+      ? possibleReplacements
+      : [possibleReplacements]
+    let filledContent: ReactNode = translation
+
+    if (arrayReplacements.length > 0) {
+      filledContent = replaceBracketsWithChildren(translation, arrayReplacements)
+    }
 
     useEffect(() => {
       // TODO Native replacement onLoad.
       // console.log('effect', ref.current)
     }, [])
 
-    // @ts-ignore Issues with ref.
     return createElement(Component, { ...props, ref }, filledContent)
   }
 

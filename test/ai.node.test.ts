@@ -35,3 +35,17 @@ test('Translates several to various languages.', async () => {
   // Das / Dies.
   expect(sheetGerman.description).toContain('ist die Beschreibung.')
 }, 20000)
+
+test('Replacement position stays intact.', async () => {
+  const inputSheet = JSON.stringify({
+    regular: 'first {} second {} third',
+    ordered: 'one {2} two {1} three',
+  })
+  const sheetGerman = await translate(inputSheet, Language.de)
+
+  expect(
+    sheetGerman.regular === 'erstes {} zweites {} drittes' ||
+      sheetGerman.regular === 'erste {} zweite {} dritte',
+  ).toBe(true)
+  expect(sheetGerman.ordered).toBe('eins {2} zwei {1} drei')
+}, 20000)

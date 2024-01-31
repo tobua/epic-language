@@ -24,22 +24,39 @@ export function insertReplacements(
   return result
 }
 
-export function replaceBracketsWithChildren(text: string, replacements?: ReactNode[]) {
-  if (!replacements || !text.includes('{}')) return text
+// Other than JSX.Element only string and number are allowed and we check them here.
+const isNode = (value: unknown) => typeof value !== 'number' && typeof value !== 'string'
 
-  const parts = text.split('{}')
+// TODO ReactNode or JSX.Element?
+export function replaceBracketsWithChildren(text: string, replacements: Replacement[]) {
+  const parts = text.match(/({\d+})|({})|([^{}]+)/g)
   const result: ReactNode[] = []
-  let currentIndex = 0
 
-  for (let index = 0; index < parts.length; index += 1) {
-    result.push(parts[index])
-    if (index < parts.length - 1) {
-      currentIndex %= replacements.length
-      // @ts-ignore
-      result.push(cloneElement(replacements[currentIndex], { key: currentIndex }))
-      currentIndex += 1
+  if (!parts) return [text]
+
+  parts.forEach((part, partIndex) => {
+    if (part.startsWith('{') && part.endsWith('}')) {
+      const index = parseInt(part.slice(1, -1), 10)
+      if (!Number.isNaN(index) && index <= replacements.length) {
+        const replacement = replacements[index - 1]
+        if (!isNode(replacement)) {
+          result.push(replacement)
+        } else {
+          // TODO clone necessary?
+          result.push(cloneElement(replacements[index - 1] as JSX.Element, { key: index }))
+        }
+      } else {
+        const replacement = replacements.shift()
+        result.push(
+          isNode(replacement)
+            ? cloneElement(replacement as JSX.Element, { key: partIndex })
+            : replacement,
+        )
+      }
+    } else {
+      result.push(part)
     }
-  }
+  })
 
   return result
 }
