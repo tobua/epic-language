@@ -1,8 +1,8 @@
 /// <reference lib="dom" />
 
 import './setup-dom'
-import { test, expect, mock, beforeEach } from 'bun:test'
-import { Language, create } from '../index'
+import { test, expect, beforeEach } from 'bun:test'
+import { Language, State, States, create } from '../index'
 import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
 
 beforeEach(() => {
@@ -10,11 +10,9 @@ beforeEach(() => {
 })
 
 test('Translates key in initially provided language.', () => {
-  const onLoad = mock(() => {})
   const { translate } = create({
     translations: englishSheet,
     route: '/api/translations',
-    onLoad,
     defaultLanguage: Language.en,
   })
 
@@ -22,17 +20,15 @@ test('Translates key in initially provided language.', () => {
   expect(translate('description')).toBe(englishSheet.description)
   // @ts-expect-error
   expect(translate('missing')).toBe('missing')
-  expect(onLoad).toHaveBeenCalled()
+  expect(State.current).toBe(States.ready)
 })
 
 test('Symbols or numbers cannot be used as keys.', () => {
   // TODO doesn't seem possible to restrict keys to string when using generic type with extends.
-  const onLoad = mock(() => {})
   const symbol = Symbol('test')
   const { translate } = create({
     translations: { [symbol]: 'My Symbol', 5: 'My Number' },
     route: '/api/translations',
-    onLoad,
     defaultLanguage: Language.en,
   })
 
@@ -40,7 +36,7 @@ test('Symbols or numbers cannot be used as keys.', () => {
   expect(translate(5)).toBe('My Number')
   // @ts-expect-error
   expect(translate('missing')).toBe('missing')
-  expect(onLoad).toHaveBeenCalled()
+  expect(State.current).toBe(States.ready)
 })
 
 test('Replacements are inserted.', () => {
@@ -79,11 +75,9 @@ test('Replacements can be numbered.', () => {
 test('Multiple sheets can be provided initially.', () => {
   globalThis.mockLanguage = 'es-ES'
 
-  const onLoad = mock(() => {})
   const { translate } = create({
     translations: spanishSheet,
     route: '/api/translations',
-    onLoad,
     defaultLanguage: Language.es,
     sheets: {
       [Language.en]: englishSheet,
@@ -94,17 +88,15 @@ test('Multiple sheets can be provided initially.', () => {
   expect(translate('title')).toBe(spanishSheet.title)
   expect(translate('title', undefined, Language.zh)).toBe(chineseSheet.title)
   expect(translate('title', undefined, Language.en)).toBe(englishSheet.title)
-  expect(onLoad).toHaveBeenCalled()
+  expect(State.current).toBe(States.ready)
 })
 
 test('Available languages can be restricted.', () => {
   globalThis.mockLanguage = 'de_CH'
 
-  const onLoad = mock(() => {})
   const { translate } = create({
     translations: spanishSheet,
     route: '/api/translations',
-    onLoad,
     defaultLanguage: Language.es,
     sheets: {
       [Language.en]: englishSheet,

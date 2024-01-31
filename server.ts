@@ -12,6 +12,8 @@ new Elysia()
 
     if (error) return new Response(`Sheet for language "${language}" not found!`)
 
+    await new Promise((done) => setTimeout(done, 1000)) // Best way to add delay?
+
     return {
       ...value.default,
       language,

@@ -2,9 +2,9 @@
 
 import './setup-dom'
 import React from 'react'
-import { test, expect, mock, beforeEach } from 'bun:test'
+import { test, expect, beforeEach } from 'bun:test'
 import { render } from '@testing-library/react'
-import { Language, create } from '../index'
+import { Language, State, States, create } from '../index'
 import { englishSheet } from './data'
 
 beforeEach(() => {
@@ -17,11 +17,9 @@ const serializeDocument = (node: Element = document.body) => {
 }
 
 test('Text component can be used to render translations.', () => {
-  const onLoad = mock(() => {})
   const { Text } = create({
     translations: englishSheet,
     route: '/api/translations',
-    onLoad,
     defaultLanguage: Language.en,
   })
 
@@ -37,7 +35,7 @@ test('Text component can be used to render translations.', () => {
   const title = app.getByTestId('title')
   const description = app.getByTestId('description')
 
-  expect(onLoad).toHaveBeenCalled()
+  expect(State.current).toBe(States.ready)
   expect(title.textContent).toEqual(englishSheet.title)
   expect(description.textContent).toEqual(englishSheet.description)
 
@@ -45,14 +43,12 @@ test('Text component can be used to render translations.', () => {
 })
 
 test('Text and JSX can be used as replacements.', () => {
-  const onLoad = mock(() => {})
   const { Text } = create({
     translations: {
       regular: 'first {} second {} third',
       ordered: 'one {2} two {1} three',
     },
     route: '/api/translations',
-    onLoad,
     defaultLanguage: Language.en,
   })
 
@@ -67,7 +63,7 @@ test('Text and JSX can be used as replacements.', () => {
 
   const serialized = serializeDocument()
 
-  expect(onLoad).toHaveBeenCalled()
+  expect(State.current).toBe(States.ready)
   expect(serialized).toContain('first 123 second 456 third')
   expect(serialized).toContain('one 456 two 123 three')
   expect(serialized).toContain('first <span>123</span> second <p>456</p> third')

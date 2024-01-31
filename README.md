@@ -47,7 +47,7 @@ const { translate } = create({
 
 translate('title') // My Title
 translate('replacement', 5) // Counter: 5
-transate('multipleOrderedReplacements', ['pastime', 'your']) // What's your current pastime?
+translate('multipleOrderedReplacements', ['pastime', 'your']) // What's your current pastime?
 ```
 
 ## Usage with Runtime Translation and Caching
@@ -64,8 +64,6 @@ const { translate } = create({
   },
   // Route to load translations for user language.
   route: '/api/translations',
-  // Callback for when translations have been loaded.
-  onLoad,
 })
 
 translate('title') // My Title
@@ -105,4 +103,28 @@ const config = {
 }
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config)
+```
+
+## Advanced Usage
+
+The `State` object allows you to keep track of the status for loading language sheets.
+
+```tsx
+import { create, State } from 'epic-language'
+
+const { translate } = create({ translations: { title: 'My Title' } })
+
+State.current === 'ready' // Current state: initial, loading or ready.
+State.listen((state, language) => console.log(state, language)) // Listen to state changes.
+State.languages // List of all available translated languages.
+```
+
+It's also possible to insert `JSX.Element` as replacements.
+
+```tsx
+import { create } from 'epic-language'
+
+const { translate } = create({ translations: { counter: 'Count {} at {}' } })
+
+translate(counter, [<span>5</span>, <div style={{ color: 'red' }}>{`12:34 PM`}</div>]) // Count <span>5</span> at <div>12:34 PM</div>
 ```

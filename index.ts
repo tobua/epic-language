@@ -3,8 +3,10 @@ import { type Text as NativeText } from 'react-native'
 import { log, readableLanguage } from './helper'
 import { Sheets, Sheet, Language, Replacement, TextProps } from './types'
 import { insertReplacements, replaceBracketsWithChildren } from './replace'
+import { States, State, type Listener } from './state'
 
 export { Language, readableLanguage }
+export { States, State, Listener }
 
 const has = (object: object, key: string | number | symbol) => Object.hasOwn(object, key)
 
@@ -20,17 +22,18 @@ async function loadSheet<T extends Sheet>(
   language: Language,
   sheets: Sheets<T>,
   apiRoute: string,
-  onLoad: () => void,
   defaultLanguage: Language,
 ) {
-  if (language === defaultLanguage || sheets[language]) return onLoad()
+  if (language === defaultLanguage || sheets[language]) return State.ready(language)
+  if (State.loadingLanguages.includes(language)) return undefined
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<void>(async (done) => {
+    State.load(language)
     const response = await fetch(`${apiRoute}/${language}`)
     const data = await response.json()
 
     sheets[language] = data
-    onLoad()
+    State.ready(language)
     done()
   })
 }
@@ -39,7 +42,6 @@ async function loadSheet<T extends Sheet>(
 export function create<T extends Sheet>({
   translations,
   route,
-  onLoad = () => {},
   defaultLanguage = Language.en,
   sheets = {},
   languages = Object.keys(Language),
@@ -48,7 +50,6 @@ export function create<T extends Sheet>({
 }: {
   translations: T
   route?: string
-  onLoad?: () => void
   defaultLanguage?: Language
   sheets?: Sheets<T>
   languages?: string[]
@@ -69,7 +70,7 @@ export function create<T extends Sheet>({
   let userLanguage = getLanguage(defaultLanguage)
   sheets[defaultLanguage] = translations
 
-  loadSheet(userLanguage, sheets, route, onLoad, defaultLanguage)
+  loadSheet(userLanguage, sheets, route, defaultLanguage)
 
   function translate(
     key: keyof T,
@@ -89,7 +90,7 @@ export function create<T extends Sheet>({
     if (!sheet || !has(sheet, key)) {
       if (process.env.NODE_ENV !== 'production') {
         log(`Translation for key "${String(key)}" for language ${language} is missing`, 'warning')
-        loadSheet(language, sheets, route, () => {}, defaultLanguage)
+        loadSheet(language, sheets, route, defaultLanguage)
       }
       return (sheet ?? {})[key as string] ?? key
     }
@@ -127,6 +128,7 @@ export function create<T extends Sheet>({
     }
 
     useEffect(() => {
+      // State.listen()
       // TODO Native replacement onLoad.
       // console.log('effect', ref.current)
     }, [])
@@ -136,7 +138,7 @@ export function create<T extends Sheet>({
 
   function setLanguage(language: Language) {
     userLanguage = language
-    loadSheet(language, sheets, route, onLoad, defaultLanguage)
+    loadSheet(language, sheets, route, defaultLanguage)
   }
 
   return { translate, Text, language: userLanguage, setLanguage }

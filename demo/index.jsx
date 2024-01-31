@@ -1,19 +1,13 @@
 import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Exmpl } from 'exmpl'
-import { create, Language, readableLanguage } from 'epic-language'
+import { create, Language, State, readableLanguage } from 'epic-language'
 
 const englishSheet = { title: 'My Title!' }
-
-let loaded = false
-let onLoad = () => {
-  loaded = true
-}
 
 const { translate, Text, language, setLanguage } = create({
   translations: englishSheet,
   route: 'http://localhost:3001/api/static/serverless', // '/api/static/serverless',
-  onLoad,
   defaultLanguage: Language.en,
 })
 
@@ -24,11 +18,13 @@ const InlineCode = ({ children }) => (
 )
 
 function Translations() {
-  const [loading, setLoading] = useState(!loaded)
+  const [loading, setLoading] = useState(!State.current === 'ready')
   const [currentLanguage, setCurrentLanguage] = useState(language)
 
   useEffect(() => {
-    onLoad = () => setLoading(false)
+    State.listen((state) => {
+      setLoading(state === 'ready' ? false : true)
+    })
   }, [loading])
 
   return (

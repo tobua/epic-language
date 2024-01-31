@@ -15,6 +15,6 @@
     "epic-language": ".."
   },
   "devDependencies": {
-    "vercel": "^33.3.0"
+    "vercel": "^33.4.1"
   }
 }
