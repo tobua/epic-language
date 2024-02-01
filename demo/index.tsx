@@ -2,12 +2,22 @@ import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Exmpl } from 'exmpl'
 import { create, Language, State, readableLanguage } from 'epic-language'
+import { Mode } from './Mode'
 
 const englishSheet = { title: 'My Title!' }
 
+const mode = sessionStorage.getItem('mode') || 'serverless-dynamic'
+
+const routeByMode = {
+  'serverless-dynamic': 'serverless',
+  'serverless-static': 'static/serverless',
+  'edge-dynamic': 'edge',
+  'edge-static': 'static/edge',
+}
+
 const { translate, Text, language, setLanguage } = create({
   translations: englishSheet,
-  route: 'http://localhost:3001/api/static/serverless', // '/api/static/serverless',
+  route: `http://localhost:3001/api/${routeByMode[mode]}`,
   defaultLanguage: Language.en,
 })
 
@@ -18,7 +28,7 @@ const InlineCode = ({ children }) => (
 )
 
 function Translations() {
-  const [loading, setLoading] = useState(!State.current === 'ready')
+  const [loading, setLoading] = useState(State.current !== 'ready')
   const [currentLanguage, setCurrentLanguage] = useState(language)
 
   useEffect(() => {
@@ -46,28 +56,37 @@ function Translations() {
         <InlineCode>{`<Text language={Language.zh}>title</Text>`}</InlineCode>:{' '}
         <Text language={Language.zh}>title</Text>
       </div>
-      <select
-        value={currentLanguage}
+      <div
         style={{
-          border: '2px solid black',
-          borderRadius: 10,
-          padding: 5,
           position: 'absolute',
           right: 0,
           top: 0,
-        }}
-        onChange={(event) => {
-          const nextLanguage = event.target.value
-          setLanguage(nextLanguage)
-          setCurrentLanguage(nextLanguage)
+          display: 'flex',
+          flexDirection: 'row',
+          gap: 10,
         }}
       >
-        {Object.entries(Language).map(([key, language]) => (
-          <option key={key} value={key}>
-            {readableLanguage[language].flag} {readableLanguage[language].local}
-          </option>
-        ))}
-      </select>
+        <Mode mode={mode} />
+        <select
+          value={currentLanguage}
+          style={{
+            border: '2px solid black',
+            borderRadius: 10,
+            padding: 5,
+          }}
+          onChange={(event) => {
+            const nextLanguage = event.target.value as Language
+            setLanguage(nextLanguage)
+            setCurrentLanguage(nextLanguage)
+          }}
+        >
+          {Object.entries(Language).map(([key, language]) => (
+            <option key={key} value={key}>
+              {readableLanguage[language].flag} {readableLanguage[language].local}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   )
 }

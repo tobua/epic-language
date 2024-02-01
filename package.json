@@ -9,6 +9,7 @@
     "build": "padua build",
     "server": "bun --watch server.ts",
     "server:files": "bun dist/bin.js --input test/files/en.json --output test/files --language en",
+    "demo:files": "bun dist/bin.js --input demo/api/static/translations/en.json --output demo/api/static/translations --language en",
     "start": "padua watch",
     "test": "bun test",
     "test:browser": "bun test browser.test",
@@ -18,7 +19,8 @@
     "entry": [
       "index.ts",
       "native.ts",
-      "bin.ts"
+      "bin.ts",
+      "translate.ts"
     ],
     "esbuild": {
       "external": [
@@ -84,6 +86,12 @@
       "default": {
         "types": "./dist/native.d.ts",
         "default": "./dist/native.js"
+      }
+    },
+    "./function": {
+      "default": {
+        "types": "./dist/translate.d.ts",
+        "default": "./dist/translate.js"
       }
     }
   },

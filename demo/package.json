@@ -1,11 +1,14 @@
 {
   "scripts": {
     "build": "papua build",
+    "build:files": "bunx epic-language --input api/static/translations/en.json --output api/static/translations --language en",
     "deploy": "vercel deploy",
     "start": "papua start",
     "start:vercel": "vercel dev"
   },
   "dependencies": {
+    "@vercel/node": "^3.0.17",
+    "avait": "^0.7.0",
     "exmpl": "^3.0.0",
     "papua": "latest",
     "react": "^18.2.0",

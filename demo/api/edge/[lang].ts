@@ -1,5 +1,7 @@
 import { Language } from 'epic-language'
+import { translate } from 'epic-language/translate'
 import { it } from 'avait'
+import englishSheet from '../en.json'
 
 export const config = {
   runtime: 'edge',
@@ -7,13 +9,10 @@ export const config = {
 
 export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams
-  const language = searchParams.get('lang') ?? ''
+  const language = searchParams.get('lang') as Language
   if (!(language in Language)) return new Response(`Missing language "${language}"`)
-  const {
-    error,
-    value: { default: sheet },
-  } = await it(import(`../translations/${language}.json`))
-  if (error) return new Response(`Sheet for language "${language}" not found!`)
+  const { error, value: sheet } = await it(translate(JSON.stringify(englishSheet), language))
+  if (error) return new Response(`Translation for language "${language}" failed!`)
   return new Response(JSON.stringify(sheet), {
     status: 200,
     headers: {
