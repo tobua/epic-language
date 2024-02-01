@@ -51,6 +51,21 @@ test('Translations are loaded from serverless function.', async () => {
   expect(translate('title')).toBe(germanSheet.title)
 })
 
+test('Initial translations and default language are optional.', async () => {
+  globalThis.mockLanguage = 'en_US'
+  const { translate } = create({
+    route: 'http://localhost:3000/api/translations',
+  })
+
+  expect(State.current).toBe(States.loading)
+  expect(translate('title')).toBe('title')
+
+  await delay(0.1)
+
+  expect(State.current).toBe(States.ready)
+  expect(translate('title').toLowerCase()).toBe('my title')
+})
+
 test('Different translations can are loaded.', async () => {
   globalThis.mockLanguage = 'zh_CN'
   const { translate, language } = create({

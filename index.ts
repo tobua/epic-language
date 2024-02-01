@@ -18,14 +18,10 @@ function getBrowserLanguage(defaultLanguage: Language) {
   return defaultLanguage
 }
 
-async function loadSheet<T extends Sheet>(
-  language: Language,
-  sheets: Sheets<T>,
-  apiRoute: string,
-  defaultLanguage: Language,
-) {
-  if (language === defaultLanguage || sheets[language]) return State.ready(language)
+async function loadSheet<T extends Sheet>(language: Language, sheets: Sheets<T>, apiRoute: string) {
+  if (sheets[language]) return State.ready(language)
   if (State.loadingLanguages.includes(language)) return undefined
+
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<void>(async (done) => {
     State.load(language)
@@ -48,7 +44,7 @@ export function create<T extends Sheet>({
   Type = 'span',
   getLanguage = getBrowserLanguage,
 }: {
-  translations: T
+  translations?: T
   route?: string
   defaultLanguage?: Language
   sheets?: Sheets<T>
@@ -68,9 +64,11 @@ export function create<T extends Sheet>({
   }
 
   let userLanguage = getLanguage(defaultLanguage)
-  sheets[defaultLanguage] = translations
+  if (translations) {
+    sheets[defaultLanguage] = translations
+  }
 
-  loadSheet(userLanguage, sheets, route, defaultLanguage)
+  loadSheet(userLanguage, sheets, route)
 
   function translate(
     key: keyof T,
@@ -90,7 +88,7 @@ export function create<T extends Sheet>({
     if (!sheet || !has(sheet, key)) {
       if (process.env.NODE_ENV !== 'production') {
         log(`Translation for key "${String(key)}" for language ${language} is missing`, 'warning')
-        loadSheet(language, sheets, route, defaultLanguage)
+        loadSheet(language, sheets, route)
       }
       return (sheet ?? {})[key as string] ?? key
     }
@@ -138,7 +136,7 @@ export function create<T extends Sheet>({
 
   function setLanguage(language: Language) {
     userLanguage = language
-    loadSheet(language, sheets, route, defaultLanguage)
+    loadSheet(language, sheets, route)
   }
 
   return { translate, Text, language: userLanguage, setLanguage }
