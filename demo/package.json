@@ -9,6 +9,7 @@
   "dependencies": {
     "@vercel/node": "^3.0.17",
     "avait": "^0.7.0",
+    "epic-language": "latest",
     "exmpl": "^3.0.0",
     "papua": "latest",
     "react": "^18.2.0",

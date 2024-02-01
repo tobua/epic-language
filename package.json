@@ -7,9 +7,9 @@
   "author": "Matthias Giger",
   "scripts": {
     "build": "padua build",
+    "demo:files": "bun dist/bin.js --input demo/api/static/translations/en.json --output demo/api/static/translations --language en",
     "server": "bun --watch server.ts",
     "server:files": "bun dist/bin.js --input test/files/en.json --output test/files --language en",
-    "demo:files": "bun dist/bin.js --input demo/api/static/translations/en.json --output demo/api/static/translations --language en",
     "start": "padua watch",
     "test": "bun test",
     "test:browser": "bun test browser.test",
