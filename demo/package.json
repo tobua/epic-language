@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "vercel": "^33.4.1"
+  },
+  "overrides": {
+    "typescript": ">= 5"
   }
 }

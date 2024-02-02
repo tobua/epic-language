@@ -23,16 +23,6 @@ jobs:
       # Tests running in parallel and browser environment cannot be torn down properly after tests.
       - name: 🧪 Test Browser
         run: bun run test:browser
-      - name: 🛠️ Build Demo
-        run: |
-          cd demo
-          bun install
-          bunx papua build
-      - name: 🚀 Publish Documentation
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: publish
-          folder: demo/dist
       - name: 📢 Release
         uses: tobua/release-npm-action@v3
         with:
