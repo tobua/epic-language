@@ -1,10 +1,10 @@
 {
   "functions": {
-    "api/static/serverless/[lang].ts": {
-      "includeFiles": "api/static/translations/*"
+    "api/static/serverless/[lang]": {
+      "includeFiles": "./api/static/translations/*.json"
     },
-    "api/static/edge/[lang].ts": {
-      "includeFiles": "api/static/translations/*"
+    "api/static/edge/[lang]": {
+      "includeFiles": "./api/static/translations/*.json"
     }
   }
 }
