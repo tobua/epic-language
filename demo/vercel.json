@@ -1,10 +1,14 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/static/serverless/[lang].ts": {
-      "includeFiles": "demo/api/static/translations/*.json"
+      "includeFiles": "*.json"
     },
     "api/static/edge/[lang].ts": {
-      "includeFiles": "demo/api/static/translations/*.json"
+      "includeFiles": "*.json"
+    },
+    "api/serverless/[lang].ts": {
+      "includeFiles": "*.json"
     }
   }
 }

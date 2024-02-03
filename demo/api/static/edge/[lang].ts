@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams
   const language = searchParams.get('lang') ?? ''
   if (!(language in Language)) return new Response(`Missing language "${language}"`)
-  const { error, value: sheet } = await it(import(`./../translations/${language}.json`))
+  const { error, value: sheet } = await it(import(`./${language}.json`))
   console.log(error, sheet)
   if (error) return new Response(`Sheet for language "${language}" not found!`)
   return new Response(JSON.stringify(sheet), {
