@@ -54,7 +54,7 @@
     "@types/bun": "^1.0.4",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
-    "avait": "^0.7.0",
+    "avait": "^1.0.0",
     "elysia": "^0.8.15",
     "happy-dom": "^13.3.8",
     "openai": "^4.26.0",
