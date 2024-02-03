@@ -5,7 +5,7 @@ export function insertReplacements(
   translation: string,
   replacements?: Replacement | Replacement[],
 ) {
-  if (!replacements) return translation
+  if (typeof replacements === 'undefined') return translation
 
   if (!Array.isArray(replacements)) {
     // eslint-disable-next-line no-param-reassign

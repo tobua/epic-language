@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { Exmpl } from 'exmpl'
+import { Button, Exmpl } from 'exmpl'
 import { create, Language, State, readableLanguage } from 'epic-language'
 import { Mode } from './Mode'
-
-const englishSheet = { title: 'My Title!' }
+import englishSheet from './api/static/translations/en.json'
 
 const mode = sessionStorage.getItem('mode') || 'serverless-dynamic'
 
@@ -15,9 +14,11 @@ const routeByMode = {
   'edge-static': 'static/edge',
 }
 
+const baseUrl = process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:3001/'
+
 const { translate, Text, language, setLanguage } = create({
   translations: englishSheet,
-  route: `http://localhost:3001/api/${routeByMode[mode]}`,
+  route: `${baseUrl}api/${routeByMode[mode]}`,
   defaultLanguage: Language.en,
 })
 
@@ -30,6 +31,12 @@ const InlineCode = ({ children }) => (
 function Translations() {
   const [loading, setLoading] = useState(State.current !== 'ready')
   const [currentLanguage, setCurrentLanguage] = useState(language)
+  const [count, setCount] = useState(0)
+
+  const timeAndPlace = [
+    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  ]
 
   useEffect(() => {
     State.listen((state) => {
@@ -50,11 +57,42 @@ function Translations() {
         {readableLanguage[Language.zh].english})
       </div>
       <div>
+        <InlineCode>{`translate('counter', count)`}</InlineCode>: {translate('counter', count)}
+      </div>
+      <div>
+        <InlineCode>{`translate('time', [...])`}</InlineCode>: {translate('time', timeAndPlace)}
+      </div>
+      <div>
         <InlineCode>{`<Text>title</Text>`}</InlineCode>: <Text>title</Text>
       </div>
       <div>
+        <InlineCode>{`<Text language={currentLanguage}>title</Text>`}</InlineCode>:{' '}
+        <Text language={currentLanguage}>title</Text> ({readableLanguage[currentLanguage].flag}{' '}
+        {readableLanguage[currentLanguage].english})
+      </div>
+      <div>
         <InlineCode>{`<Text language={Language.zh}>title</Text>`}</InlineCode>:{' '}
-        <Text language={Language.zh}>title</Text>
+        <Text language={Language.zh}>title</Text> ({readableLanguage[Language.zh].flag}{' '}
+        {readableLanguage[Language.zh].english})
+      </div>
+      <div>
+        <InlineCode>{`<Text language={currentLanguage} replacements={count}>counter</Text>`}</InlineCode>
+        :{' '}
+        <Text language={currentLanguage} replacements={count}>
+          counter
+        </Text>{' '}
+        ({readableLanguage[currentLanguage].flag} {readableLanguage[currentLanguage].english})
+      </div>
+      <div>
+        <InlineCode>{`<Text language={currentLanguage} replacements={[...]}>>time</Text>`}</InlineCode>
+        :{' '}
+        <Text language={currentLanguage} replacements={timeAndPlace}>
+          time
+        </Text>{' '}
+        ({readableLanguage[currentLanguage].flag} {readableLanguage[currentLanguage].english})
+      </div>
+      <div>
+        <Button onClick={() => setCount(count + 1)}>Increment Counter</Button>
       </div>
       <div
         style={{

@@ -49,6 +49,8 @@ test('Replacements are inserted.', () => {
   expect(translate('counter', 456)).toBe('Count: 456')
   expect(translate('counter', 'spaced@ _$')).toBe('Count: spaced@ _$')
   expect(translate('multiple', ['123', '456'])).toBe('First: 123 Second: 456')
+  expect(translate('counter', 0)).toBe('Count: 0')
+  expect(translate('counter', [0])).toBe('Count: 0')
 })
 
 test('Replacements can be numbered.', () => {

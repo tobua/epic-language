@@ -1,1 +1,6 @@
-{ "title": "My Title", "description": "This is the description." }
+{
+  "title": "My Title",
+  "description": "This is the description.",
+  "counter": "Count: {}",
+  "time": "Current time in {2} is {1}"
+}

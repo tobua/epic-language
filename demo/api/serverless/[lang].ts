@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Language } from 'epic-language'
-import { translate } from 'epic-language/translate'
+import { translate } from 'epic-language/function'
 import englishSheet from '../en.json'
 import { it } from 'avait'
 
