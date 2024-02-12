@@ -1,6 +1,7 @@
 node_modules
 package-lock.json
-/tsconfig.json
+tsconfig.json
+!demo/api/tsconfig.json
 dist
 bun.lockb
 .env

@@ -8,7 +8,7 @@ const openai = new OpenAI({
 })
 
 export async function translate(input: string, language: Language) {
-  const prompt = `Translate the following object values to ${readableLanguage[language].english}. Please do not translate the object keys.
+  const prompt = `Translate the following object values to ${readableLanguage[language].english}. Please do not translate the object keys. Make sure to only include the output as JSON in the response.
 
 ${input}`
 

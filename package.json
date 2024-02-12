@@ -51,13 +51,12 @@
     "@elysiajs/cors": "^0.8.0",
     "@happy-dom/global-registrator": "^13.3.8",
     "@testing-library/react": "^14.2.1",
-    "@types/bun": "^1.0.4",
-    "@types/react": "^18.2.52",
-    "@types/react-dom": "^18.2.18",
+    "@types/bun": "^1.0.5",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
     "avait": "^1.0.0",
-    "elysia": "^0.8.15",
-    "happy-dom": "^13.3.8",
-    "openai": "^4.26.0",
+    "elysia": "^0.8.17",
+    "openai": "^4.27.0",
     "padua": "^2.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -116,6 +115,5 @@
   "engines": {
     "bun": ">= 1",
     "node": ">= 18"
-  },
-  "packageManager": "^bun@1.0.22"
+  }
 }
