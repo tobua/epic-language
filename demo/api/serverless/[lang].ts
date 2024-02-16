@@ -3,9 +3,10 @@ import { Language } from 'epic-language'
 import { translate } from 'epic-language/function'
 import { promises as fs } from 'fs'
 import { it } from 'avait'
+import englishSheetImport from './en.json'
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
-  console.log(process.cwd(), new URL('./en.json', import.meta.url))
+  console.log(process.cwd(), new URL('./en.json', import.meta.url), englishSheetImport)
   const language = request.query.lang as Language
   if (!(language in Language))
     return response.status(500).json({ error: `Missing language "${language}"` })

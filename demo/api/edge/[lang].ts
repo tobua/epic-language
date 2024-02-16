@@ -1,7 +1,7 @@
 import { Language } from 'epic-language'
 import { translate } from 'epic-language/function'
 import { it } from 'avait'
-import englishSheet from '../en.json'
+import englishSheet from './en.json'
 
 export const config = {
   runtime: 'edge',
