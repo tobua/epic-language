@@ -3,7 +3,7 @@ import { Language } from 'epic-language'
 import { translate } from 'epic-language/function'
 import { promises as fs } from 'fs'
 import { it } from 'avait'
-import englishSheetImport from './en.json'
+import englishSheetImport from './en.json' assert { type: 'json' }
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   console.log(process.cwd(), new URL('./en.json', import.meta.url), englishSheetImport)

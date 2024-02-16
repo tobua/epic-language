@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/static/edge/[lang].ts": {
-      "includeFiles": "./*.json"
+      "includeFiles": "demo/api/static/edge/*.json"
     }
   }
 }
