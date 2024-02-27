@@ -3,22 +3,21 @@ import { createRoot } from 'react-dom/client'
 import { Button, Exmpl } from 'exmpl'
 import { create, Language, State, readableLanguage } from 'epic-language'
 import { Mode } from './Mode'
-import englishSheet from './api/static/translations/en.json'
+import englishSheet from './translations.json'
 
-const mode = sessionStorage.getItem('mode') || 'serverless-dynamic'
+const mode = sessionStorage.getItem('mode') || 'serverless'
 
 const routeByMode = {
-  'serverless-dynamic': 'serverless',
-  'serverless-static': 'static/serverless',
-  'edge-dynamic': 'edge',
-  'edge-static': 'static/edge',
+  serverless: 'api/serverless/[language]',
+  edge: 'api/edge/[language]',
+  static: '[language].json',
 }
 
 const baseUrl = process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:3001/'
 
 const { translate, Text, language, setLanguage } = create({
   translations: englishSheet,
-  route: `${baseUrl}api/${routeByMode[mode]}`,
+  route: `${baseUrl}${routeByMode[mode]}`,
   defaultLanguage: Language.en,
 })
 

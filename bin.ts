@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import minimist from 'minimist'
-import { existsSync, lstatSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, lstatSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { join, dirname, isAbsolute } from 'path'
 import { log } from './helper'
 import { Language } from './types'
@@ -31,7 +31,8 @@ if (!output) {
 }
 
 if (!existsSync(fullOutputPath)) {
-  log(`Output folder "${output}" does not exist`, 'error')
+  log(`Creating output folder "${output}"`, 'warning')
+  mkdirSync(fullOutputPath)
 }
 
 if (!lstatSync(fullOutputPath).isDirectory()) {
@@ -54,6 +55,11 @@ const translatePromises = parsedLanguages.map(async (currentLanguage: Language) 
   writeFileSync(join(fullOutputPath, `${currentLanguage}.json`), JSON.stringify(sheet, null, 2), {
     flag: 'w', // Override existing file.
   })
+})
+
+// Also create input language file.
+writeFileSync(join(fullOutputPath, `${language}.json`), inputSheetContents, {
+  flag: 'w', // Override existing file.
 })
 
 await Promise.all(translatePromises)

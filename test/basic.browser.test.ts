@@ -12,7 +12,7 @@ beforeEach(() => {
 test('Translates key in initially provided language.', () => {
   const { translate } = create({
     translations: englishSheet,
-    route: '/api/translations',
+    route: '/api/translations/[language]',
     defaultLanguage: Language.en,
   })
 
@@ -28,7 +28,7 @@ test('Symbols or numbers cannot be used as keys.', () => {
   const symbol = Symbol('test')
   const { translate } = create({
     translations: { [symbol]: 'My Symbol', 5: 'My Number' },
-    route: '/api/translations',
+    route: '/api/translations/[language]',
     defaultLanguage: Language.en,
   })
 
@@ -42,7 +42,7 @@ test('Symbols or numbers cannot be used as keys.', () => {
 test('Replacements are inserted.', () => {
   const { translate } = create({
     translations: { counter: 'Count: {}', multiple: 'First: {} Second: {}' },
-    route: '/api/translations',
+    route: '/api/translations/[language]',
   })
 
   expect(translate('counter', '123')).toBe('Count: 123')
@@ -62,7 +62,7 @@ test('Replacements can be numbered.', () => {
       unordered: 'a {2} b {1} c {3} d',
       multipleOrderedReplacements: "What's {2} current {1}?",
     },
-    route: '/api/translations',
+    route: '/api/translations/[language]',
   })
 
   expect(translate('one', '1')).toBe('a 1 b')
@@ -79,7 +79,7 @@ test('Multiple sheets can be provided initially.', () => {
 
   const { translate } = create({
     translations: spanishSheet,
-    route: '/api/translations',
+    route: '/api/translations/[language]',
     defaultLanguage: Language.es,
     sheets: {
       [Language.en]: englishSheet,
@@ -98,7 +98,7 @@ test('Available languages can be restricted.', () => {
 
   const { translate } = create({
     translations: spanishSheet,
-    route: '/api/translations',
+    route: '/api/translations/[language]',
     defaultLanguage: Language.es,
     sheets: {
       [Language.en]: englishSheet,

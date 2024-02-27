@@ -19,7 +19,7 @@ const serializeDocument = (node: Element = document.body) => {
 test('Text component can be used to render translations.', () => {
   const { Text } = create({
     translations: englishSheet,
-    route: '/api/translations',
+    route: '/api/translations/[language]',
     defaultLanguage: Language.en,
   })
 
@@ -48,7 +48,7 @@ test('Text and JSX can be used as replacements.', () => {
       regular: 'first {} second {} third',
       ordered: 'one {2} two {1} three',
     },
-    route: '/api/translations',
+    route: '/api/translations/[language]',
     defaultLanguage: Language.en,
   })
 

@@ -1,22 +1,15 @@
+import { it } from 'avait'
 import { Language } from 'epic-language'
 import { translate } from 'epic-language/function'
-import { it } from 'avait'
-import englishSheet from './en.json'
+import translations from '../../translations.json'
 
-export const config = {
-  runtime: 'edge',
-}
+export const runtime = 'edge'
 
 export async function GET(request: Request) {
-  const searchParams = new URL(request.url).searchParams
+  const { searchParams } = new URL(request.url)
   const language = searchParams.get('lang') as Language
   if (!(language in Language)) return new Response(`Missing language "${language}"`)
-  const { error, value: sheet } = await it(translate(JSON.stringify(englishSheet), language))
+  const { error, value: sheet } = await it(translate(JSON.stringify(translations), language))
   if (error) return new Response(`Translation for language "${language}" failed!`)
-  return new Response(JSON.stringify(sheet), {
-    status: 200,
-    headers: {
-      'content-type': 'application/json',
-    },
-  })
+  return Response.json(sheet)
 }

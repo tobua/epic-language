@@ -12,10 +12,9 @@ export function Mode({ mode }: { mode: string }) {
         window.location.reload()
       }}
     >
-      <option value="serverless-dynamic">Serverless Function Dynamic</option>
-      <option value="serverless-static">Serverless Function Static</option>
-      <option value="edge-dynamic">Edge Function Dynamic</option>
-      <option value="edge-static">Edge Function Static</option>
+      <option value="serverless">Serverless Function</option>
+      <option value="edge">Edge Function</option>
+      <option value="static">Static Assets</option>
     </select>
   )
 }

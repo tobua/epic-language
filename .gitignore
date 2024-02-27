@@ -5,5 +5,4 @@ tsconfig.json
 dist
 bun.lockb
 .env
-test/files/*
-!test/files/en.json
+test/translation

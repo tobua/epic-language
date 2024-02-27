@@ -25,7 +25,7 @@ async function loadSheet<T extends Sheet>(language: Language, sheets: Sheets<T>,
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<void>(async (done) => {
     State.load(language)
-    const response = await fetch(`${apiRoute}/${language}`)
+    const response = await fetch(apiRoute.replace('[language]', language))
     const data = await response.json()
 
     sheets[language] = data

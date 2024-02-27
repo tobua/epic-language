@@ -36,7 +36,7 @@ test('Translations are loaded from serverless function.', async () => {
   globalThis.mockLanguage = 'de_CH'
   const { translate, language } = create({
     translations: englishSheet,
-    route: 'http://localhost:3000/api/translations',
+    route: 'http://localhost:3000/api/translations/[language]',
     defaultLanguage: Language.en,
   })
 
@@ -54,7 +54,7 @@ test('Translations are loaded from serverless function.', async () => {
 test('Initial translations and default language are optional.', async () => {
   globalThis.mockLanguage = 'en_US'
   const { translate } = create({
-    route: 'http://localhost:3000/api/translations',
+    route: 'http://localhost:3000/api/translations/[language]',
   })
 
   expect(State.current).toBe(States.loading)
@@ -70,7 +70,7 @@ test('Different translations can are loaded.', async () => {
   globalThis.mockLanguage = 'zh_CN'
   const { translate, language } = create({
     translations: englishSheet,
-    route: 'http://localhost:3000/api/translations',
+    route: 'http://localhost:3000/api/translations/[language]',
     defaultLanguage: Language.en,
   })
 
@@ -94,7 +94,7 @@ test('Will not load sheets for non-existing languages.', async () => {
   globalThis.mockLanguage = 'ab_CD'
   const { translate, language } = create({
     translations: englishSheet,
-    route: 'http://localhost:3000/api/translations',
+    route: 'http://localhost:3000/api/translations/[language]',
     // @ts-expect-error
     defaultLanguage: 'ab',
   })
