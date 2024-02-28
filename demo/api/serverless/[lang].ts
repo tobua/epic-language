@@ -9,7 +9,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
   if (!(language in Language))
     return response.status(500).json({ error: `Missing language "${language}"` })
   const englishSheet = JSON.parse(
-    readFileSync(new URL('../../data/en.json', import.meta.url), 'utf8'),
+    readFileSync(new URL('../../translations.json', import.meta.url), 'utf8'),
   )
   const { error, value: sheet } = await it(translate(JSON.stringify(englishSheet), language))
   if (error)

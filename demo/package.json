@@ -6,6 +6,10 @@
     "start": "papua start",
     "start:vercel": "vercel dev"
   },
+  "papua": {
+    "title": "epic-language Demo",
+    "icon": "../logo.svg"
+  },
   "dependencies": {
     "@vercel/node": "^3.0.20",
     "avait": "^1.0.0",

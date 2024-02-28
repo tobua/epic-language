@@ -10,7 +10,7 @@ const mode = sessionStorage.getItem('mode') || 'serverless'
 const routeByMode = {
   serverless: 'api/serverless/[language]',
   edge: 'api/edge/[language]',
-  static: '[language].json',
+  static: 'translation/[language].json',
 }
 
 const baseUrl = process.env.NODE_ENV === 'production' ? '/' : 'http://localhost:3001/'

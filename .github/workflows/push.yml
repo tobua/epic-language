@@ -20,6 +20,7 @@ jobs:
         run: bun run test:node
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_ORGANIZATION: ${{ secrets.OPENAI_ORGANIZATION }}
       # Tests running in parallel and browser environment cannot be torn down properly after tests.
       - name: 🧪 Test Browser
         run: bun run test:browser

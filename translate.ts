@@ -4,7 +4,7 @@ import { readableLanguage } from './helper'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  organization: 'org-jec41Owv49cySXoL8adosmOh',
+  organization: process.env.OPENAI_ORGANIZATION,
 })
 
 export async function translate(input: string, language: Language) {

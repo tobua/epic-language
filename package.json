@@ -10,7 +10,6 @@
     "demo:files": "bun dist/bin.js --input demo/api/static/translations/en.json --output demo/api/static/translations --language en",
     "server": "bun --watch server.ts",
     "server:files": "bun dist/bin.js --input translations.json --output test/translation --language en",
-    "start": "padua watch",
     "test": "bun test",
     "test:browser": "bun test browser.test",
     "test:node": "bun test node.test"
@@ -52,7 +51,7 @@
     "@elysiajs/static": "^0.8.1",
     "@happy-dom/global-registrator": "^13.6.2",
     "@testing-library/react": "^14.2.1",
-    "@types/bun": "^1.0.7",
+    "@types/bun": "^1.0.8",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.19",
     "avait": "^1.0.0",

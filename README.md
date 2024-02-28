@@ -14,14 +14,14 @@ AI-assisted translation library for React and React Native.
 - Translations generated on demand using LLMs (AI)
 - Optimized for development phase: no need to commit any translations to source!
 
-This project was built to try the Bun 🐰 runtime, Cursor AI 🖱️ editor and CodeWhisperer 🤫.
+This project was built to try the Bun 🐰 runtime, Cursor AI 🖱️ editor and CodeWhisperer 🤫. See [this blog post](https://onwebfocus.com/bun) detailing my experiences.
 
 ## Usage with Buildtime Translation
 
-This is the most basic method where all translations are bundled into the main JavaScript bundle. This is useful for development, when supporting only few languages or when distributing as a package like React Native apps. To use this method, create a main JSON file in the default language containing the initial translations. The CLI translation script can then be used to translate these keys during installation or the build.
+This is the most basic method where all translations are bundled into the main JavaScript bundle. This is useful for development, when supporting only few languages or when distributing as a package like React Native apps. To use this method, create a main JSON file in the default language containing the initial translations. The CLI translation script can then be used to translate these keys during installation or the build. Running this will require `OPENAI_API_KEY` and `OPENAI_ORGANIZATION` (optional) environment variables to be present. When using Bun with `bunx` instead of `npx` these variables will automatically be loaded from your `.env` file.
 
 ```sh
-npx epic-language --input translations/en.json --output translations --language en --languages es,zh
+npx epic-language --input translations.json --output translations --language en --languages es,zh
 ```
 
 Once generated the translation files can be imported as JSON and bundled directly into JavaScript.
@@ -50,24 +50,93 @@ translate('replacement', 5) // Counter: 5
 translate('multipleOrderedReplacements', ['pastime', 'your']) // What's your current pastime?
 ```
 
-## Usage with Runtime Translation and Caching
+### Individual Translations Served As Static Files
+
+To avoid bundling translations with your regular JavaScript code and only send the required translations to the user you can configure a static route. In most build tools assets from the `/public` folder will be served statically.
+
+```sh
+npx epic-language --input translations.json --output public/translation --language en --languages es,zh
+```
 
 ```ts
-import { create } from 'epic-language'
+import { create, Language } from 'epic-language'
+// Always load the translations for the default language.
+import translations from './translations.json'
 
 const { translate } = create({
   // Initial translations in default language.
-  translations: {
-    title: 'My Title',
-    description: 'This is the description.',
-    counter: 'Count: {}',
-  },
+  translations,
+  // Translation files served statically as JSON files per language.
+  // [language] will be replaced with the language (en, es, zh etc.)
+  route: 'translation/[language].json',
+})
+
+translate('title') // My Title
+```
+
+## Usage with Runtime Translation and Caching
+
+The route can point to a Serverless or Edge API function that will generate and cache the desired translations. This avoids translating every language during the build and will save a lot of time during the development phase, while ensuring translations always work.
+
+```ts
+import { create } from 'epic-language'
+import translations from './translations.json'
+
+const { translate } = create({
+  // Initial translations in default language.
+  translations,
   // Route to load translations for user language.
-  route: '/api/translations',
+  // [language] will be replaced with the language (en, es, zh etc.)
+  route: '/api/translation/[language]',
 })
 
 translate('title') // My Title
 translate('counter', '5') // Counter: 5
+```
+
+The following functions have been tested on Vercel and can be adapted accordingly for other hosting providers. It's important to make sure the `OPENAI_API_KEY` and `OPENAI_ORGANIZATION` (optional) environment variables are available in your functions. Check out the [`/api` source code](https://github.com/tobua/epic-language/tree/main/demo/api) of the demo application.
+
+### Serverless Function
+
+```ts
+import { readFileSync } from 'fs'
+import { it } from 'avait'
+import { Language } from 'epic-language'
+import { translate } from 'epic-language/function'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+
+export default async function handler(request: VercelRequest, response: VercelResponse) {
+  const language = request.query.lang as Language
+  if (!(language in Language))
+    return response.status(500).json({ error: `Missing language "${language}"` })
+  const englishSheet = JSON.parse(
+    readFileSync(new URL('../../translations.json', import.meta.url), 'utf8'),
+  )
+  const { error, value: sheet } = await it(translate(JSON.stringify(englishSheet), language))
+  if (error)
+    return response.status(500).json({ error: `Translation for language "${language}" failed!` })
+  response.status(200).json(sheet)
+}
+```
+
+### Edge Function
+
+```ts
+import { it } from 'avait'
+import { Language } from 'epic-language'
+import { translate } from 'epic-language/function'
+import translations from '../../translations.json'
+
+export const runtime = 'edge'
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const language = searchParams.get('lang') as Language
+  if (!(language in Language)) return new Response(`Missing language "${language}"`)
+  const { error, value: sheet } = await it(translate(JSON.stringify(translations), language))
+  if (error) return new Response(`Translation for language "${language}" failed!`)
+  return Response.json(sheet)
+}
 ```
 
 ## Usage with React Native
