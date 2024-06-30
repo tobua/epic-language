@@ -17,7 +17,7 @@ const handler = async ({ params: { language }, set }) => {
 
 new Elysia()
   .use(cors())
-  .use(staticPlugin({ assets: 'test/translation', prefix: '' }))
+  .use(staticPlugin({ assets: 'test/translation', prefix: 'translation' }))
   .get('/api/serverless/:language', handler)
   .get('/api/edge/:language', handler)
   .listen(3001)

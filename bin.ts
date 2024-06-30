@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import minimist from 'minimist'
 import { existsSync, lstatSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { join, dirname, isAbsolute } from 'path'

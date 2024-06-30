@@ -18,10 +18,10 @@ This project was built to try the Bun 🐰 runtime, Cursor AI 🖱️ editor and
 
 ## Usage with Buildtime Translation
 
-This is the most basic method where all translations are bundled into the main JavaScript bundle. This is useful for development, when supporting only few languages or when distributing as a package like React Native apps. To use this method, create a main JSON file in the default language containing the initial translations. The CLI translation script can then be used to translate these keys during installation or the build. Running this will require `OPENAI_API_KEY` and `OPENAI_ORGANIZATION` (optional) environment variables to be present. When using Bun with `bunx` instead of `npx` these variables will automatically be loaded from your `.env` file.
+This is the most basic method where all translations are bundled into the main JavaScript bundle. This is useful for development, when supporting only few languages or when distributing as a package like React Native apps. To use this method, create a main JSON file in the default language containing the initial translations. The CLI translation script can then be used to translate these keys during installation or the build. Running this will require `OPENAI_API_KEY` and `OPENAI_ORGANIZATION` (optional) environment variables to be present. These variables will automatically be loaded from your `.env` file thanks to Bun.
 
 ```sh
-npx epic-language --input translations.json --output translations --language en --languages es,zh
+bunx epic-language --input translations.json --output translations --language en --languages es,zh
 ```
 
 Once generated the translation files can be imported as JSON and bundled directly into JavaScript.
@@ -55,7 +55,7 @@ translate('multipleOrderedReplacements', ['pastime', 'your']) // What's your cur
 To avoid bundling translations with your regular JavaScript code and only send the required translations to the user you can configure a static route. In most build tools assets from the `/public` folder will be served statically.
 
 ```sh
-npx epic-language --input translations.json --output public/translation --language en --languages es,zh
+bunx epic-language --input translations.json --output public/translation --language en --languages es,zh
 ```
 
 ```ts

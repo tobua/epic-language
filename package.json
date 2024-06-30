@@ -47,19 +47,19 @@
     "minimist": "^1.2.8"
   },
   "devDependencies": {
-    "@elysiajs/cors": "^0.8.0",
-    "@elysiajs/static": "^0.8.1",
-    "@happy-dom/global-registrator": "^13.6.2",
-    "@testing-library/react": "^14.2.1",
-    "@types/bun": "^1.0.8",
-    "@types/react": "^18.2.60",
-    "@types/react-dom": "^18.2.19",
-    "avait": "^1.0.0",
-    "elysia": "^0.8.17",
-    "openai": "^4.28.0",
-    "padua": "^3.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@elysiajs/cors": "^1.0.2",
+    "@elysiajs/static": "^1.0.3",
+    "@happy-dom/global-registrator": "^14.12.3",
+    "@testing-library/react": "^16.0.0",
+    "@types/bun": "^1.1.6",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "avait": "^1.0.1",
+    "elysia": "^1.0.26",
+    "openai": "^4.52.2",
+    "padua": "^4.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "peerDependencies": {
     "openai": ">= 4",
@@ -71,6 +71,9 @@
       "optional": true
     }
   },
+  "trustedDependencies": [
+    "padua"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",

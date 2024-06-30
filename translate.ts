@@ -1,5 +1,5 @@
 import OpenAI from 'openai'
-import type { Language } from './types'
+import { type Language, Model } from './types'
 import { readableLanguage } from './helper'
 
 const openai = new OpenAI({
@@ -7,15 +7,27 @@ const openai = new OpenAI({
   organization: process.env.OPENAI_ORGANIZATION,
 })
 
-export async function translate(input: string, language: Language) {
-  const prompt = `Translate the following object values to ${readableLanguage[language].english}. Please do not translate the object keys. Make sure to only include the output as JSON in the response.
-
-${input}`
-
+export async function translate(input: string, language: Language, model: Model = Model.omni) {
   const chatCompletion = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model,
     stream: false,
-    messages: [{ role: 'user', content: prompt }],
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a helpful assistant.',
+      },
+      {
+        role: 'user',
+        content: `Please translate the following object values to ${readableLanguage[language].english}.
+
+${input}`,
+      },
+      {
+        role: 'user',
+        content:
+          'Note: Please do not translate the object keys. Do not format the JSON within markdown code blocks. Just return the plain JSON.',
+      },
+    ],
   })
 
   const { choices } = chatCompletion

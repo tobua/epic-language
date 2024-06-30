@@ -1,11 +1,11 @@
 import { useRef, useEffect, createElement, type ReactNode } from 'react'
 import { type Text as NativeText } from 'react-native'
 import { log, readableLanguage } from './helper'
-import { Sheets, Sheet, Language, Replacement, TextProps } from './types'
+import { Sheets, Sheet, Language, Replacement, TextProps, Model } from './types'
 import { insertReplacements, replaceBracketsWithChildren } from './replace'
 import { States, State, type Listener } from './state'
 
-export { Language, readableLanguage }
+export { Language, readableLanguage, Model }
 export { States, State, Listener }
 
 const has = (object: object, key: string | number | symbol) => Object.hasOwn(object, key)

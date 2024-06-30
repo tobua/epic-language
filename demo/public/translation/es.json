@@ -1,6 +1,6 @@
 {
   "title": "Mi Título",
   "description": "Esta es la descripción.",
-  "counter": "Contador: {}",
+  "counter": "Cuenta: {}",
   "time": "La hora actual en {2} es {1}"
 }

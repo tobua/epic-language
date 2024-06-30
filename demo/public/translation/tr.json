@@ -1,6 +1,6 @@
 {
   "title": "Başlığım",
   "description": "Bu açıklamadır.",
-  "counter": "Say: {}",
-  "time": "{2} saat diliminde şu an saat {1}"
+  "counter": "Sayı: {}",
+  "time": "Şu anki zaman {2} içindeki {1}"
 }

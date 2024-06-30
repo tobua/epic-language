@@ -31,3 +31,8 @@ export type Languages = keyof typeof Language
 export type TextProps = DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> &
   DetailedHTMLProps<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement> &
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+
+export enum Model {
+  omni = 'gpt-4o',
+  fast = 'gpt-3.5-turbo',
+}

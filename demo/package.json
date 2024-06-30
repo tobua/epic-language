@@ -11,19 +11,19 @@
     "icon": "../logo.svg"
   },
   "dependencies": {
-    "@vercel/node": "^3.0.20",
-    "avait": "^1.0.0",
+    "@vercel/node": "^3.2.0",
+    "avait": "^1.0.1",
     "epic-language": "latest",
     "exmpl": "^3.1.0",
     "papua": "latest",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "localDependencies": {
     "epic-language": ".."
   },
   "devDependencies": {
-    "vercel": "^33.5.2"
+    "vercel": "^34.2.8"
   },
   "trustedDependencies": [
     "papua"
