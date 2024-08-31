@@ -11,8 +11,8 @@
     "icon": "../logo.svg"
   },
   "dependencies": {
-    "@vercel/node": "^3.2.0",
-    "avait": "^1.0.1",
+    "@vercel/node": "^3.2.10",
+    "avait": "^2.1.1",
     "epic-language": "latest",
     "exmpl": "^3.1.0",
     "papua": "latest",
@@ -23,7 +23,7 @@
     "epic-language": ".."
   },
   "devDependencies": {
-    "vercel": "^34.2.8"
+    "vercel": "^37.2.1"
   },
   "trustedDependencies": [
     "papua"

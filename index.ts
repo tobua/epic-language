@@ -41,7 +41,7 @@ export function create<T extends Sheet>({
   defaultLanguage = Language.en,
   sheets = {},
   languages = Object.keys(Language),
-  Type = 'span',
+  as = 'span',
   getLanguage = getBrowserLanguage,
 }: {
   translations?: T
@@ -49,7 +49,7 @@ export function create<T extends Sheet>({
   defaultLanguage?: Language
   sheets?: Sheets<T>
   languages?: string[]
-  Type?: 'span' | 'p' | 'div' | 'a' | 'button' | typeof NativeText
+  as?: 'span' | 'p' | 'div' | 'a' | 'button' | typeof NativeText
   getLanguage?: (language: Language) => Language
 }) {
   if (!(defaultLanguage in Language)) {
@@ -96,14 +96,13 @@ export function create<T extends Sheet>({
   }
 
   function Text({
-    as = 'span',
     id,
     replacements,
     language = defaultLanguage,
     children,
     ...props
   }: {
-    as?: typeof Type
+    as?: typeof as
     id?: keyof T
     replacements?: Replacement | Replacement[]
     language?: Language
@@ -114,7 +113,7 @@ export function create<T extends Sheet>({
     const sheet = (sheets[language] ?? {}) as Sheet<keyof T>
     const defaultSheet = (sheets[defaultLanguage] ?? {}) as Sheet<keyof T>
     const translation = sheet[key] ?? defaultSheet[key] ?? String(key)
-    const Component = as
+    const Component = props.as ?? as
     const possibleReplacements = id && !replacements ? children : replacements
     const arrayReplacements = Array.isArray(possibleReplacements)
       ? possibleReplacements
