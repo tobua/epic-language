@@ -1,4 +1,3 @@
-// @ts-ignore Somehow not part of RN types, but available in old and new architecture...
 import { Text, Platform, I18nManager, Settings } from 'react-native'
 import { create as baseCreate, readableLanguage, Language } from 'epic-language'
 import { Sheet, Sheets } from './types'
@@ -18,7 +17,7 @@ function getNativeLanguage(defaultLanguage: Language) {
       locale = defaultLanguage
     }
   } else {
-    locale = locale.replace('_', '-')
+    locale = (locale as string).replace('_', '-')
     ;[locale] = locale.split('@') // Remove region.
   }
 
