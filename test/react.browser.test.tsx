@@ -1,8 +1,7 @@
 /// <reference lib="dom" />
 
 import './setup-dom'
-import React from 'react'
-import { test, expect, beforeEach } from 'bun:test'
+import { beforeEach, expect, test } from 'bun:test'
 import { render } from '@testing-library/react'
 import { Language, State, States, create } from '../index'
 import { englishSheet } from './data'

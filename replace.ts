@@ -1,14 +1,12 @@
 import { type ReactNode, cloneElement } from 'react'
-import { Replacement } from './types'
+import type React from 'react'
+import type { Replacement } from './types'
 
-export function insertReplacements(
-  translation: string,
-  replacements?: Replacement | Replacement[],
-) {
+export function insertReplacements(translation: string, replacements?: Replacement | Replacement[]) {
   if (typeof replacements === 'undefined') return translation
 
   if (!Array.isArray(replacements)) {
-    // eslint-disable-next-line no-param-reassign
+    // biome-ignore lint/style/noParameterAssign: Much easier in this case.
     replacements = [replacements]
   }
 
@@ -36,22 +34,18 @@ export function replaceBracketsWithChildren(text: string, replacements: Replacem
 
   parts.forEach((part, partIndex) => {
     if (part.startsWith('{') && part.endsWith('}')) {
-      const index = parseInt(part.slice(1, -1), 10)
+      const index = Number.parseInt(part.slice(1, -1), 10)
       if (!Number.isNaN(index) && index <= replacements.length) {
         const replacement = replacements[index - 1]
-        if (!isNode(replacement)) {
-          result.push(replacement)
-        } else {
+        if (isNode(replacement)) {
           // TODO clone necessary?
-          result.push(cloneElement(replacements[index - 1] as JSX.Element, { key: index }))
+          result.push(cloneElement(replacements[index - 1] as React.JSX.Element, { key: index }))
+        } else {
+          result.push(replacement)
         }
       } else {
         const replacement = replacements.shift()
-        result.push(
-          isNode(replacement)
-            ? cloneElement(replacement as JSX.Element, { key: partIndex })
-            : replacement,
-        )
+        result.push(isNode(replacement) ? cloneElement(replacement as React.JSX.Element, { key: partIndex }) : replacement)
       }
     } else {
       result.push(part)

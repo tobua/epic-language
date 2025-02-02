@@ -1,17 +1,12 @@
 #!/usr/bin/env bun
+import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, isAbsolute, join } from 'node:path'
 import minimist from 'minimist'
-import { existsSync, lstatSync, readFileSync, writeFileSync, mkdirSync } from 'fs'
-import { join, dirname, isAbsolute } from 'path'
 import { log } from './helper'
-import { Language } from './types'
 import { translate } from './translate'
+import { Language } from './types'
 
-const {
-  input,
-  output,
-  language = Language.en,
-  languages = Object.keys(Language),
-} = minimist(process.argv.slice(2))
+const { input, output, language = Language.en, languages = Object.keys(Language) } = minimist(process.argv.slice(2))
 let fullInputPath = isAbsolute(input) ? input : join(process.cwd(), input)
 let fullOutputPath = isAbsolute(output) ? output : join(process.cwd(), output)
 

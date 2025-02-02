@@ -1,7 +1,7 @@
-import { test, expect } from 'bun:test'
+import { expect, test } from 'bun:test'
 import { translate } from '../translate'
-import { englishSheet, spanishSheet } from './data'
 import { Language } from '../types'
+import { englishSheet, spanishSheet } from './data'
 
 test('Translates key in initially provided language.', async () => {
   const translation = await translate(JSON.stringify(englishSheet), Language.es)

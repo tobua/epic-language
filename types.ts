@@ -1,10 +1,10 @@
-import type { DetailedHTMLProps, HTMLAttributes } from 'react'
+import type React from 'react'
 
 export type Sheet<T extends string | number | symbol = string> = {
-  [key in T]: string
+  [K in T]: string
 }
-export type Sheets<T extends Sheet> = { [key in Language]?: Sheet<keyof T> }
-export type Replacement = string | number | JSX.Element
+export type Sheets<T extends Sheet> = { [K in Language]?: Sheet<keyof T> }
+export type Replacement = string | number | React.JSX.Element
 
 // https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 export enum Language {
@@ -28,9 +28,9 @@ export enum Language {
 
 export type Languages = keyof typeof Language
 
-export type TextProps = DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> &
-  DetailedHTMLProps<HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement> &
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+export type TextProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> &
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement> &
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
 export enum Model {
   omni = 'gpt-4o',

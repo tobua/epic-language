@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { StyleSheet, View, Pressable } from 'react-native'
-import { create, Language } from 'epic-language/native'
+import { Language, create } from 'epic-language/native'
+import { useState } from 'react'
+import { Pressable, StyleSheet, View } from 'react-native'
 
 const { Text } = create(
   {

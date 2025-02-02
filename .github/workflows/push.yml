@@ -12,19 +12,16 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - name: 🚧 Build
-        run: bun run build
-      - name: 🧪 Test Server
-        run: bun run test:node
+      - run: bun check
+      - run: bun types
+      - run: bun run test:node
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_ORGANIZATION: ${{ secrets.OPENAI_ORGANIZATION }}
       # Tests running in parallel and browser environment cannot be torn down properly after tests.
-      - name: 🧪 Test Browser
-        run: bun run test:browser
-      - name: 📢 Release
-        uses: tobua/release-npm-action@v3
+      - run: bun run test:browser
+      - uses: tobua/release-npm-action@v3
         with:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

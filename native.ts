@@ -1,34 +1,27 @@
-import { Text, Platform, I18nManager, Settings } from 'react-native'
-import { create as baseCreate, readableLanguage, Language } from 'epic-language'
-import { Sheet, Sheets } from './types'
+import { Language, create as baseCreate, readableLanguage } from 'epic-language'
+import { I18nManager, Platform, Settings, Text } from 'react-native'
+import type { Sheet, Sheets } from './types'
 
 export { Language, readableLanguage }
 
 function getNativeLanguage(defaultLanguage: Language) {
   // https://stackoverflow.com/questions/33468746/whats-the-best-way-to-get-device-locale-in-react-native-ios/42655021
-  let locale =
-    Platform.OS === 'android'
-      ? I18nManager.getConstants().localeIdentifier
-      : Settings.get('AppleLocale')
+  let locale = Platform.OS === 'android' ? I18nManager.getConstants().localeIdentifier : Settings.get('AppleLocale')
 
-  if (!locale) {
+  if (locale) {
+    locale = (locale as string).replace('_', '-')
+    ;[locale] = locale.split('@') // Remove region.
+  } else {
     ;[locale] = Settings.get('AppleLanguages')
     if (locale === undefined) {
       locale = defaultLanguage
     }
-  } else {
-    locale = (locale as string).replace('_', '-')
-    ;[locale] = locale.split('@') // Remove region.
   }
 
   return locale.substring(0, 2) as Language
 }
 
-export function create<T extends Sheet>(
-  translations: T,
-  sheets: Sheets<T>,
-  defaultLanguage: Language = Language.en,
-) {
+export function create<T extends Sheet>(translations: T, sheets: Sheets<T>, defaultLanguage: Language = Language.en) {
   return baseCreate({
     translations,
     defaultLanguage,

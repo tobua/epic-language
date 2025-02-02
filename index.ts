@@ -1,12 +1,12 @@
-import { useRef, useEffect, createElement, type ReactNode } from 'react'
-import { type Text as NativeText } from 'react-native'
+import { type ReactNode, createElement, useEffect, useRef } from 'react'
+import type { Text as NativeText } from 'react-native'
 import { log, readableLanguage } from './helper'
-import { Sheets, Sheet, Language, Replacement, TextProps, Model } from './types'
 import { insertReplacements, replaceBracketsWithChildren } from './replace'
-import { States, State, type Listener } from './state'
+import { type Listener, State, States } from './state'
+import { Language, Model, type Replacement, type Sheet, type Sheets, type TextProps } from './types'
 
 export { Language, readableLanguage, Model }
-export { States, State, Listener }
+export { States, State, type Listener }
 
 const has = (object: object, key: string | number | symbol) => Object.hasOwn(object, key)
 
@@ -54,9 +54,7 @@ export function create<T extends Sheet>({
 }) {
   if (!(defaultLanguage in Language)) {
     log(
-      `Trying to initialize with missing language "${defaultLanguage}", falling back to "${
-        readableLanguage[Language.en].english
-      }`,
+      `Trying to initialize with missing language "${defaultLanguage}", falling back to "${readableLanguage[Language.en].english}`,
       'warning',
     )
     // eslint-disable-next-line no-param-reassign
@@ -70,16 +68,9 @@ export function create<T extends Sheet>({
 
   loadSheet(userLanguage, sheets, route)
 
-  function translate(
-    key: keyof T,
-    replacements?: Replacement | Replacement[],
-    language: Language = userLanguage,
-  ) {
+  function translate(key: keyof T, replacements?: Replacement | Replacement[], language: Language = userLanguage) {
     if (!(language in Language)) {
-      log(
-        `Trying to translate missing language "${language}", falling back to "${readableLanguage[defaultLanguage].english}`,
-        'warning',
-      )
+      log(`Trying to translate missing language "${language}", falling back to "${readableLanguage[defaultLanguage].english}`, 'warning')
       // eslint-disable-next-line no-param-reassign
       language = defaultLanguage
     }
@@ -115,9 +106,7 @@ export function create<T extends Sheet>({
     const translation = sheet[key] ?? defaultSheet[key] ?? String(key)
     const Component = props.as ?? as
     const possibleReplacements = id && !replacements ? children : replacements
-    const arrayReplacements = Array.isArray(possibleReplacements)
-      ? possibleReplacements
-      : [possibleReplacements]
+    const arrayReplacements = Array.isArray(possibleReplacements) ? possibleReplacements : [possibleReplacements]
     let filledContent: ReactNode = translation
 
     if (arrayReplacements.length > 0) {

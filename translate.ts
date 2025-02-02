@@ -1,8 +1,8 @@
-import OpenAI from 'openai'
-import { type Language, Model } from './types'
+import openAi from 'openai'
 import { readableLanguage } from './helper'
+import { type Language, Model } from './types'
 
-const openai = new OpenAI({
+const openai = new openAi({
   apiKey: process.env.OPENAI_API_KEY,
   organization: process.env.OPENAI_ORGANIZATION,
 })

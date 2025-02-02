@@ -1,6 +1,6 @@
-import { test, expect, mock, beforeEach, type Mock } from 'bun:test'
+import { type Mock, beforeEach, expect, mock, test } from 'bun:test'
 import { Language, State, States, create } from '../index'
-import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
+import { chineseSheet, englishSheet, germanSheet, spanishSheet } from './data'
 
 const apiResponses = {
   'http://localhost:3000/api/translations/en': englishSheet,

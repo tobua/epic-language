@@ -1,4 +1,4 @@
-import { test, expect } from 'bun:test'
+import { expect, test } from 'bun:test'
 import { translate } from '../translate'
 import { Language } from '../types'
 
@@ -43,9 +43,6 @@ test('Replacement position stays intact.', async () => {
   })
   const sheetGerman = await translate(inputSheet, Language.de)
 
-  expect(
-    sheetGerman.regular === 'erstes {} zweites {} drittes' ||
-      sheetGerman.regular === 'erste {} zweite {} dritte',
-  ).toBe(true)
+  expect(sheetGerman.regular === 'erstes {} zweites {} drittes' || sheetGerman.regular === 'erste {} zweite {} dritte').toBe(true)
   expect(sheetGerman.ordered).toBe('eins {2} zwei {1} drei')
 }, 20000)

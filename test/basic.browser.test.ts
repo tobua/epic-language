@@ -1,9 +1,9 @@
 /// <reference lib="dom" />
 
 import './setup-dom'
-import { test, expect, beforeEach } from 'bun:test'
+import { beforeEach, expect, test } from 'bun:test'
 import { Language, State, States, create } from '../index'
-import { englishSheet, spanishSheet, chineseSheet, germanSheet } from './data'
+import { chineseSheet, englishSheet, germanSheet, spanishSheet } from './data'
 
 beforeEach(() => {
   globalThis.mockLanguage = 'en_US'
@@ -69,9 +69,7 @@ test('Replacements can be numbered.', () => {
   expect(translate('two', [1, 2])).toBe('a 1 b 2 c')
   expect(translate('reverse', [1, 2])).toBe('a 2 b 1 c')
   expect(translate('unordered', [1, 2, 3])).toBe('a 2 b 1 c 3 d')
-  expect(translate('multipleOrderedReplacements', ['pastime', 'your'])).toBe(
-    "What's your current pastime?",
-  )
+  expect(translate('multipleOrderedReplacements', ['pastime', 'your'])).toBe("What's your current pastime?")
 })
 
 test('Multiple sheets can be provided initially.', () => {
