@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import { createRoot } from 'react-dom/client'
+import { render, useEffect, useState } from 'epic-jsx'
+import { Language, State, create, readableLanguage } from 'epic-language'
 import { Button, Exmpl } from 'exmpl'
-import { create, Language, State, readableLanguage } from 'epic-language'
 import { Mode } from './Mode'
 import englishSheet from './translations.json'
 
@@ -22,9 +21,7 @@ const { translate, Text, language, setLanguage } = create({
 })
 
 const InlineCode = ({ children }) => (
-  <pre style={{ display: 'inline', background: 'lightgray', padding: 3, borderRadius: 3 }}>
-    {children}
-  </pre>
+  <pre style={{ display: 'inline', background: 'lightgray', padding: 3, borderRadius: 3 }}>{children}</pre>
 )
 
 function Translations() {
@@ -38,22 +35,24 @@ function Translations() {
   ]
 
   useEffect(() => {
-    State.listen((state) => {
-      setLoading(state === 'ready' ? false : true)
-    })
+    // Check ensures only one call (epic-jsx bug still).
+    if (!loading && State.current === 'loading') {
+      State.listen((state) => {
+        setLoading(state !== 'ready')
+      })
+    }
   }, [loading])
 
   return (
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 10 }}>
       {loading ? <p>Loading...</p> : <p>Ready!</p>}
       <div>
-        <InlineCode>{`translate('title')`}</InlineCode>: {translate('title')} (
-        {readableLanguage[currentLanguage].flag} {readableLanguage[currentLanguage].english})
+        <InlineCode>{`translate('title')`}</InlineCode>: {translate('title')} ({readableLanguage[currentLanguage].flag}{' '}
+        {readableLanguage[currentLanguage].english})
       </div>
       <div>
-        <InlineCode>{`translate('title', undefined, Language.zh)`}</InlineCode>:{' '}
-        {translate('title', undefined, Language.zh)} ({readableLanguage[Language.zh].flag}{' '}
-        {readableLanguage[Language.zh].english})
+        <InlineCode>{`translate('title', undefined, Language.zh)`}</InlineCode>: {translate('title', undefined, Language.zh)} (
+        {readableLanguage[Language.zh].flag} {readableLanguage[Language.zh].english})
       </div>
       <div>
         <InlineCode>{`translate('counter', count)`}</InlineCode>: {translate('counter', count)}
@@ -65,26 +64,22 @@ function Translations() {
         <InlineCode>{`<Text>title</Text>`}</InlineCode>: <Text>title</Text>
       </div>
       <div>
-        <InlineCode>{`<Text language={currentLanguage}>title</Text>`}</InlineCode>:{' '}
-        <Text language={currentLanguage}>title</Text> ({readableLanguage[currentLanguage].flag}{' '}
-        {readableLanguage[currentLanguage].english})
+        <InlineCode>{`<Text language={currentLanguage}>title</Text>`}</InlineCode>: <Text language={currentLanguage}>title</Text> (
+        {readableLanguage[currentLanguage].flag} {readableLanguage[currentLanguage].english})
       </div>
       <div>
-        <InlineCode>{`<Text language={Language.zh}>title</Text>`}</InlineCode>:{' '}
-        <Text language={Language.zh}>title</Text> ({readableLanguage[Language.zh].flag}{' '}
-        {readableLanguage[Language.zh].english})
+        <InlineCode>{`<Text language={Language.zh}>title</Text>`}</InlineCode>: <Text language={Language.zh}>title</Text> (
+        {readableLanguage[Language.zh].flag} {readableLanguage[Language.zh].english})
       </div>
       <div>
-        <InlineCode>{`<Text language={currentLanguage} replacements={count}>counter</Text>`}</InlineCode>
-        :{' '}
+        <InlineCode>{`<Text language={currentLanguage} replacements={count}>counter</Text>`}</InlineCode>:{' '}
         <Text language={currentLanguage} replacements={count}>
           counter
         </Text>{' '}
         ({readableLanguage[currentLanguage].flag} {readableLanguage[currentLanguage].english})
       </div>
       <div>
-        <InlineCode>{`<Text language={currentLanguage} replacements={[...]}>>time</Text>`}</InlineCode>
-        :{' '}
+        <InlineCode>{`<Text language={currentLanguage} replacements={[...]}>>time</Text>`}</InlineCode>:{' '}
         <Text language={currentLanguage} replacements={timeAndPlace}>
           time
         </Text>{' '}
@@ -128,7 +123,7 @@ function Translations() {
   )
 }
 
-createRoot(document.body).render(
+render(
   <Exmpl title="epic-language Demo" npm="epic-language" github="tobua/epic-language">
     <Translations />
   </Exmpl>,

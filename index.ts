@@ -1,4 +1,5 @@
 import { type ReactNode, createElement, useEffect, useRef } from 'react'
+// @ts-ignore Avoid user errors when not installed.
 import type { Text as NativeText } from 'react-native'
 import { log, readableLanguage } from './helper'
 import { insertReplacements, replaceBracketsWithChildren } from './replace'
@@ -8,8 +9,6 @@ import { Language, Model, type Replacement, type Sheet, type Sheets, type TextPr
 export { Language, readableLanguage, Model }
 export { States, State, type Listener }
 
-const has = (object: object, key: string | number | symbol) => Object.hasOwn(object, key)
-
 function getBrowserLanguage(defaultLanguage: Language) {
   // @ts-ignore dom lib is added...
   const locale = globalThis.mockLanguage ?? window.navigator?.language ?? defaultLanguage
@@ -18,11 +17,12 @@ function getBrowserLanguage(defaultLanguage: Language) {
   return defaultLanguage
 }
 
-async function loadSheet<T extends Sheet>(language: Language, sheets: Sheets<T>, apiRoute: string) {
+function loadSheet<T extends Sheet>(language: Language, sheets: Sheets<T>, apiRoute?: string) {
+  if (!apiRoute) return undefined
   if (sheets[language]) return State.ready(language)
   if (State.loadingLanguages.includes(language)) return undefined
 
-  // eslint-disable-next-line no-async-promise-executor
+  // biome-ignore lint/suspicious/noAsyncPromiseExecutor: Seems necessary.
   return new Promise<void>(async (done) => {
     State.load(language)
     const response = await fetch(apiRoute.replace('[language]', language))
@@ -71,19 +71,19 @@ export function create<T extends Sheet>({
   function translate(key: keyof T, replacements?: Replacement | Replacement[], language: Language = userLanguage) {
     if (!(language in Language)) {
       log(`Trying to translate missing language "${language}", falling back to "${readableLanguage[defaultLanguage].english}`, 'warning')
-      // eslint-disable-next-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: Much easier in this case.
       language = defaultLanguage
     }
 
     const sheet = sheets[languages.includes(language) ? language : defaultLanguage]
-    if (!sheet || !has(sheet, key)) {
+    if (!sheet?.[key]) {
       if (process.env.NODE_ENV !== 'production') {
         log(`Translation for key "${String(key)}" for language ${language} is missing`, 'warning')
         loadSheet(language, sheets, route)
       }
-      return (sheet ?? {})[key as string] ?? key
+      return sheet?.[key as string] ?? String(key)
     }
-    return insertReplacements(sheet[key as string], replacements)
+    return insertReplacements(sheet[key as string] as string, replacements)
   }
 
   function Text({
@@ -107,10 +107,11 @@ export function create<T extends Sheet>({
     const Component = props.as ?? as
     const possibleReplacements = id && !replacements ? children : replacements
     const arrayReplacements = Array.isArray(possibleReplacements) ? possibleReplacements : [possibleReplacements]
+    const replacementsFiltered = arrayReplacements.filter((item) => !!item) as Replacement[]
     let filledContent: ReactNode = translation
 
     if (arrayReplacements.length > 0) {
-      filledContent = replaceBracketsWithChildren(translation, arrayReplacements)
+      filledContent = replaceBracketsWithChildren(translation, replacementsFiltered)
     }
 
     useEffect(() => {
@@ -119,6 +120,7 @@ export function create<T extends Sheet>({
       // console.log('effect', ref.current)
     }, [])
 
+    // @ts-ignore TODO is ref even necessary?
     return createElement(Component, { ...props, ref }, filledContent)
   }
 

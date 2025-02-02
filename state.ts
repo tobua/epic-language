@@ -24,11 +24,15 @@ export const State = {
     State.loadingLanguages.splice(State.loadingLanguages.indexOf(language), 1)
     State.languages.push(language)
     State.current = States.ready
-    State.listeners.forEach((listener: Listener) => listener(State.current, language))
+    for (const listener of State.listeners) {
+      listener(State.current, language)
+    }
   },
   load(language: Language) {
     State.loadingLanguages.push(language)
     State.current = States.loading
-    State.listeners.forEach((listener) => listener(State.current, language))
+    for (const listener of State.listeners) {
+      listener(State.current, language)
+    }
   },
 }

@@ -1,4 +1,5 @@
 import { Language, create as baseCreate, readableLanguage } from 'epic-language'
+// @ts-ignore Avoid user errors when not installed (all exports are checked).
 import { I18nManager, Platform, Settings, Text } from 'react-native'
 import type { Sheet, Sheets } from './types'
 
@@ -10,9 +11,9 @@ function getNativeLanguage(defaultLanguage: Language) {
 
   if (locale) {
     locale = (locale as string).replace('_', '-')
-    ;[locale] = locale.split('@') // Remove region.
+    locale = locale.split('@')[0] ?? '' // Remove region.
   } else {
-    ;[locale] = Settings.get('AppleLanguages')
+    locale = Settings.get('AppleLanguages')[0] ?? ''
     if (locale === undefined) {
       locale = defaultLanguage
     }

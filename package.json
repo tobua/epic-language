@@ -37,6 +37,7 @@
     "openai": "^4.82.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-native": "^0.77.0",
     "typescript": "^5.7.3",
     "zero-configuration": "^0.18.0"
   },
@@ -121,13 +122,21 @@
         "files": {
           "ignore": [
             "demo",
-            "app"
+            "app",
+            "test"
           ]
         }
       },
       {
         "folder": "test",
-        "extends": "test"
+        "extends": "test",
+        "linter": {
+          "rules": {
+            "correctness": {
+              "useJsxKeyInIterable": "off"
+            }
+          }
+        }
       }
     ],
     "typescript": [

@@ -1,34 +1,28 @@
 {
+  "name": "demo-language",
   "scripts": {
-    "build": "papua build",
     "build:files": "bunx epic-language --input translations.json --output public/translation --language en",
-    "deploy": "vercel deploy",
-    "start": "papua start",
-    "start:vercel": "vercel dev"
-  },
-  "papua": {
-    "title": "epic-language Demo",
-    "icon": "../logo.svg"
+    "check": "biome check --write .",
+    "start": "rsbuild dev --open",
+    "types": "tsc"
   },
   "dependencies": {
-    "@vercel/node": "^3.2.10",
+    "@vercel/node": "^5.1.0",
+    "@biomejs/biome": "^1.9.4",
+    "@rsbuild/core": "^1.2.3",
+    "@rsbuild/plugin-react": "^1.1.0",
     "avait": "^2.1.1",
     "epic-language": "latest",
+    "epic-jsx": "^0.9.13",
     "exmpl": "^3.1.0",
-    "papua": "latest",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "typescript": "^5.7.3",
+    "zero-configuration": "^0.18.0"
   },
   "localDependencies": {
     "epic-language": ".."
   },
-  "devDependencies": {
-    "vercel": "^37.2.1"
-  },
   "trustedDependencies": [
-    "papua"
+    "zero-configuration"
   ],
-  "overrides": {
-    "typescript": ">= 5"
-  }
+  "type": "module"
 }

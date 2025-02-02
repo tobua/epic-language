@@ -45,6 +45,7 @@ export function replaceBracketsWithChildren(text: string, replacements: Replacem
         }
       } else {
         const replacement = replacements.shift()
+        // biome-ignore lint/suspicious/noArrayIndexKey: No other key available.
         result.push(isNode(replacement) ? cloneElement(replacement as React.JSX.Element, { key: partIndex }) : replacement)
       }
     } else {

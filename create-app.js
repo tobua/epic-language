@@ -20,11 +20,6 @@ copyFileSync('app/metro.config.js', `${appName}/metro.config.js`)
 rmSync('app', { recursive: true })
 renameSync(appName, 'app')
 
-// Run build to ensure distributed files for plugin exist.
-execSync(`${isBun ? 'bun' : 'npm'} run build`, {
-  stdio: 'inherit',
-})
-
 const pkg = JSON.parse(readFileSync('./package.json'))
 const packageDirectory = resolve(`app/node_modules/${pkg.name}`)
 

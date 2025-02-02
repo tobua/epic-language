@@ -32,7 +32,7 @@ ${input}`,
 
   const { choices } = chatCompletion
 
-  if (choices.length === 1) {
+  if (choices.length === 1 && choices[0]) {
     return JSON.parse(choices[0].message.content ?? '{}')
   }
 
