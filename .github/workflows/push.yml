@@ -16,6 +16,9 @@ jobs:
       - run: bun install
       - run: bun check
       - run: bun server:files # Files need to be available for valid types import in test.
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_ORGANIZATION: ${{ secrets.OPENAI_ORGANIZATION }}
       - run: bun types
       - run: bun run test:node
         env:
